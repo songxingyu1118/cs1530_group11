@@ -28,29 +28,35 @@
 
 <section class="menu">
     <h2>Menu</h2>
-    <div class="menu-item">
+    <div class="menu-item" id="item1">
         <h3>Spaghetti Carbonara</h3>
         <p><strong>Calories:</strong> 650 kcal</p>
         <p><strong>Ingredients:</strong> Spaghetti, Bacon, Egg, Parmesan Cheese, Black Pepper</p>
-        <p class="review">"A creamy and satisfying classic!" - Emily</p>
+        <p class="review" id="comment1">"A creamy and satisfying classic!" - Emily</p>
         <p class="price">$12.99</p>
         <p class="spicy-level">Spicy Level: Mild</p>
+        <textarea id="new-comment1" placeholder="Leave your comment..."></textarea>
+        <button onclick="addComment('comment1', 'new-comment1')">Add Comment</button>
     </div>
-    <div class="menu-item">
+    <div class="menu-item" id="item2">
         <h3>Chicken Tikka Masala</h3>
         <p><strong>Calories:</strong> 800 kcal</p>
         <p><strong>Ingredients:</strong> Chicken, Tomato Sauce, Cream, Spices</p>
-        <p class="review">"Perfectly balanced with just the right amount of spice!" - John</p>
+        <p class="review" id="comment2">"Perfectly balanced with just the right amount of spice!" - John</p>
         <p class="price">$14.99</p>
         <p class="spicy-level">Spicy Level: Medium</p>
+        <textarea id="new-comment2" placeholder="Leave your comment..."></textarea>
+        <button onclick="addComment('comment2', 'new-comment2')">Add Comment</button>
     </div>
-    <div class="menu-item">
+    <div class="menu-item" id="item3">
         <h3>Vegetarian Sushi</h3>
         <p><strong>Calories:</strong> 350 kcal</p>
         <p><strong>Ingredients:</strong> Rice, Avocado, Cucumber, Seaweed</p>
-        <p class="review">"Fresh and light, a healthy option!" - Sarah</p>
+        <p class="review" id="comment3">"Fresh and light, a healthy option!" - Sarah</p>
         <p class="price">$9.99</p>
         <p class="spicy-level">Spicy Level: None</p>
+        <textarea id="new-comment3" placeholder="Leave your comment..."></textarea>
+        <button onclick="addComment('comment3', 'new-comment3')">Add Comment</button>
     </div>
     <!-- Add more menu items as needed -->
 </section>
@@ -59,5 +65,6 @@
     <p>&copy; 2025 Restaurant Name | All Rights Reserved</p>
 </footer>
 
+<script src="script.js"></script>
 </body>
 </html>
