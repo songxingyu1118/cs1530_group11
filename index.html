@@ -28,43 +28,91 @@
 
 <section class="menu">
     <h2>Menu</h2>
+    
+    <!-- Spaghetti Carbonara -->
     <div class="menu-item" id="item1">
         <h3>Spaghetti Carbonara</h3>
+        <img src="img/item1.jpg" alt="Spaghetti Carbonara" class="menu-image">
         <p><strong>Calories:</strong> 650 kcal</p>
         <p><strong>Ingredients:</strong> Spaghetti, Bacon, Egg, Parmesan Cheese, Black Pepper</p>
         <p class="review" id="comment1">"A creamy and satisfying classic!" - Emily</p>
         <p class="price">$12.99</p>
         <p class="spicy-level">Spicy Level: Mild</p>
+
+        <!-- Rating System -->
+        <div class="rating" id="rating-stars1">
+            <span class="star" data-star="1">&#9733;</span>
+            <span class="star" data-star="2">&#9733;</span>
+            <span class="star" data-star="3">&#9733;</span>
+            <span class="star" data-star="4">&#9733;</span>
+            <span class="star" data-star="5">&#9733;</span>
+        </div>
+        <p>Rating: <span id="rating1">No rating yet</span></p>
+        <p>Average Rating: <span id="avg-rating1">No ratings yet</span></p>
+
+        <!-- Comment Section -->
         <textarea id="new-comment1" placeholder="Leave your comment..."></textarea>
         <button onclick="addComment('comment1', 'new-comment1')">Add Comment</button>
     </div>
+
+    <!-- Grilled Chicken Salad -->
     <div class="menu-item" id="item2">
-        <h3>Chicken Tikka Masala</h3>
-        <p><strong>Calories:</strong> 800 kcal</p>
-        <p><strong>Ingredients:</strong> Chicken, Tomato Sauce, Cream, Spices</p>
-        <p class="review" id="comment2">"Perfectly balanced with just the right amount of spice!" - John</p>
-        <p class="price">$14.99</p>
-        <p class="spicy-level">Spicy Level: Medium</p>
+        <h3>Grilled Chicken Salad</h3>
+        <img src="img/item2.jpg" alt="Grilled Chicken Salad" class="menu-image">
+        <p><strong>Calories:</strong> 350 kcal</p>
+        <p><strong>Ingredients:</strong> Grilled Chicken, Mixed Greens, Cherry Tomatoes, Avocado, Olive Oil</p>
+        <p class="review" id="comment2">"A fresh and healthy option for a light meal." - John</p>
+        <p class="price">$10.99</p>
+        <p class="spicy-level">Spicy Level: Mild</p>
+
+        <!-- Rating System -->
+        <div class="rating" id="rating-stars2">
+            <span class="star" data-star="1">&#9733;</span>
+            <span class="star" data-star="2">&#9733;</span>
+            <span class="star" data-star="3">&#9733;</span>
+            <span class="star" data-star="4">&#9733;</span>
+            <span class="star" data-star="5">&#9733;</span>
+        </div>
+        <p>Rating: <span id="rating2">No rating yet</span></p>
+        <p>Average Rating: <span id="avg-rating2">No ratings yet</span></p>
+
+        <!-- Comment Section -->
         <textarea id="new-comment2" placeholder="Leave your comment..."></textarea>
         <button onclick="addComment('comment2', 'new-comment2')">Add Comment</button>
     </div>
+
+    <!-- Margherita Pizza -->
     <div class="menu-item" id="item3">
-        <h3>Vegetarian Sushi</h3>
-        <p><strong>Calories:</strong> 350 kcal</p>
-        <p><strong>Ingredients:</strong> Rice, Avocado, Cucumber, Seaweed</p>
-        <p class="review" id="comment3">"Fresh and light, a healthy option!" - Sarah</p>
-        <p class="price">$9.99</p>
-        <p class="spicy-level">Spicy Level: None</p>
+        <h3>Margherita Pizza</h3>
+        <img src="img/item3.jpg" alt="Margherita Pizza" class="menu-image">
+        <p><strong>Calories:</strong> 800 kcal</p>
+        <p><strong>Ingredients:</strong> Pizza Dough, Tomato Sauce, Fresh Mozzarella, Basil</p>
+        <p class="review" id="comment3">"A simple yet delicious pizza!" - Sarah</p>
+        <p class="price">$14.99</p>
+        <p class="spicy-level">Spicy Level: Mild</p>
+
+        <!-- Rating System -->
+        <div class="rating" id="rating-stars3">
+            <span class="star" data-star="1">&#9733;</span>
+            <span class="star" data-star="2">&#9733;</span>
+            <span class="star" data-star="3">&#9733;</span>
+            <span class="star" data-star="4">&#9733;</span>
+            <span class="star" data-star="5">&#9733;</span>
+        </div>
+        <p>Rating: <span id="rating3">No rating yet</span></p>
+        <p>Average Rating: <span id="avg-rating3">No ratings yet</span></p>
+
+        <!-- Comment Section -->
         <textarea id="new-comment3" placeholder="Leave your comment..."></textarea>
         <button onclick="addComment('comment3', 'new-comment3')">Add Comment</button>
     </div>
-    <!-- Add more menu items as needed -->
+
 </section>
 
 <footer>
     <p>&copy; 2025 Restaurant Name | All Rights Reserved</p>
 </footer>
 
-<script src="script.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>

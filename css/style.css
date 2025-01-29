@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #ebd0d0;
 }
 
 header {
@@ -66,4 +66,12 @@ footer {
 
 .spicy-level {
     color: red;
+}
+
+.menu-image {
+    width: 100%; /* Adjust to fit your design */
+    max-width: 300px; /* Limit the max width */
+    height: auto;
+    border-radius: 8px; /* Optional: to give rounded corners */
+    margin-bottom: 10px;
 }
