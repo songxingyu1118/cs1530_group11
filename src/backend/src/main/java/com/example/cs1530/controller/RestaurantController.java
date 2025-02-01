@@ -1,7 +1,5 @@
 package com.example.cs1530.controller;
 
-package com.restaurant.review.controller;
-
 import com.example.cs1530.entity.Comment;
 import com.example.cs1530.entity.Dish;
 import com.example.cs1530.service.CommentService;
@@ -14,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class RestaurantController {
 
     @Autowired
@@ -22,18 +21,20 @@ public class RestaurantController {
     @Autowired
     private CommentService commentService;
 
-    // Get all dishes with their comments
     @GetMapping("/dishes")
     public ResponseEntity<List<Dish>> getAllDishes() {
         return ResponseEntity.ok(dishService.getAllDishes());
     }
 
-    // Add a new comment to a dish
-    @PostMapping("/dishes/{dishId}/comments")
-    public ResponseEntity<Comment> addComment(
-            @PathVariable Long dishId,
-            @RequestBody Comment comment) {
-        Comment savedComment = commentService.addComment(comment, dishId);
+    @PostMapping("/dishes")
+    public ResponseEntity<Dish> createDish(@RequestBody Dish dish) {
+        Dish savedDish = dishService.saveDish(dish);
+        return ResponseEntity.ok(savedDish);
+    }
+
+    @PostMapping("/comments")
+    public ResponseEntity<Comment> addComment(@RequestBody Comment comment) {
+        Comment savedComment = commentService.addComment(comment);
         return ResponseEntity.ok(savedComment);
     }
 }

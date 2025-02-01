@@ -1,6 +1,8 @@
 package com.example.cs1530.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,8 +16,9 @@ public class Dish {
     private String description;
     private double averageStars = 0.0;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "dish", cascade = CascadeType.ALL)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     // Getters and Setters
     public Long getId() {
