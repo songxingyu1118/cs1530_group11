@@ -2,6 +2,7 @@ package com.example.cs1530.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,13 @@ public class MenuItemService {
         return menuItemRepository.findAll();
     }
 
-    public MenuItem saveMenuItem(MenuItem menuItem) {
-        validateMenuItem(menuItem);
+    public MenuItem saveMenuItem(String name, String description, BigDecimal price, Set<Long> categoryIds) {
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName(name);
+        menuItem.setDescription(description);
+        menuItem.setPrice(price);
+        // TODO: set categories
+
         return menuItemRepository.save(menuItem);
     }
 

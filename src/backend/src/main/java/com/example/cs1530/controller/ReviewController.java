@@ -4,10 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.cs1530.dto.review.CreateReviewRequest;
+import com.example.cs1530.dto.review.ReviewDto;
 import com.example.cs1530.entity.Review;
 import com.example.cs1530.service.ReviewService;
 
@@ -19,8 +20,9 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Review> addReview(@RequestBody Review review) {
-        Review savedReview = reviewService.addReview(review);
-        return ResponseEntity.ok(savedReview);
+    public ResponseEntity<ReviewDto> createReview(CreateReviewRequest request) {
+        Review savedReview = reviewService.saveReview(request.getContent(), request.getStars(),
+                request.getMenuItemId());
+        return ResponseEntity.ok(savedReview.toDto());
     }
 }

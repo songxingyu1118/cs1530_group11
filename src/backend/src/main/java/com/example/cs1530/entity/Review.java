@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.cs1530.dto.review.ReviewDto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,7 +53,7 @@ public class Review {
     private MenuItem menuItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true) // TODO: nullable should be false when user auth is implemented
     @Schema(description = "User that created the review")
     private User user;
 
@@ -109,5 +111,9 @@ public class Review {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ReviewDto toDto() {
+        return new ReviewDto(this);
     }
 }

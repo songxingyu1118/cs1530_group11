@@ -15,7 +15,14 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public Review addReview(Review review) {
+    @Autowired
+    private MenuItemService menuItemService;
+
+    public Review saveReview(String content, int stars, Long menuItemId) {
+        Review review = new Review();
+        review.setContent(content);
+        review.setStars(stars);
+        review.setMenuItem(menuItemService.getMenuItemById(menuItemId));
         return reviewRepository.save(review);
     }
 

@@ -1,8 +1,14 @@
 package com.example.cs1530.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.example.cs1530.dto.menuitem.MenuItemDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
@@ -45,6 +51,16 @@ public class MenuItem {
     @JoinTable(name = "menu_item_categories", joinColumns = @JoinColumn(name = "menu_item_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     @Schema(description = "Set of categories that the menu item belongs to")
     private Set<Category> categories = new HashSet<>();
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    @Schema(description = "Datetime when the user was created")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    @Schema(description = "Datetime when the user was last updated")
+    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -92,5 +108,25 @@ public class MenuItem {
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public MenuItemDto toDto() {
+        return new MenuItemDto(this);
     }
 }
