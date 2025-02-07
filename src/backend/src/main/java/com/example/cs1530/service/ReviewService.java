@@ -1,32 +1,67 @@
 package com.example.cs1530.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.cs1530.entity.Review;
-import com.example.cs1530.repository.MenuItemRepository;
 import com.example.cs1530.repository.ReviewRepository;
 
 @Service
 public class ReviewService {
-    private static final Logger logger = LoggerFactory.getLogger(ReviewService.class);
-
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @Autowired
-    private MenuItemRepository menuItemRepository;
-
-    @Autowired
-    private MenuItemService menuItemService;
-
-    @Transactional
     public Review addReview(Review review) {
-        Review savedReview = reviewRepository.save(review);
-        logger.info("Saved review with ID: {}", savedReview.getId());
-        return savedReview;
+        return reviewRepository.save(review);
+    }
+
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
+    }
+
+    public List<Review> getReviewsByMenuItemId(Long menuItemId) {
+        return reviewRepository.findByMenuItemId(menuItemId);
+    }
+
+    public double getAverageRatingForMenuItem(Long menuItemId) {
+        List<Review> reviews = getReviewsByMenuItemId(menuItemId);
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+
+        double sum = reviews.stream()
+                .mapToDouble(Review::getStars)
+                .sum();
+        return sum / reviews.size();
+    }
+
+    public Review updateReview(Long id, Review updatedReview) {
+        Optional<Review> existingReview = reviewRepository.findById(id);
+
+        if (existingReview.isPresent()) {
+            Review review = existingReview.get();
+            review.setStars(updatedReview.getStars());
+            review.setContent(updatedReview.getContent());
+            review.setUpdatedAt(LocalDateTime.now());
+            return reviewRepository.save(review);
+        } else {
+            throw new RuntimeException("Review not found with id: " + id);
+        }
+    }
+
+    public void deleteReview(Long id) {
+        if (!reviewRepository.existsById(id)) {
+            throw new RuntimeException("Review not found with id: " + id);
+        }
+        reviewRepository.deleteById(id);
+    }
+
+    public Review getReviewById(Long id) {
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + id));
     }
 }
