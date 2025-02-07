@@ -7,6 +7,7 @@ import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,31 +24,39 @@ import jakarta.validation.constraints.NotNull;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique integer identifier of the user")
     private Long id;
 
     @NotNull
     @Email
     @Column(nullable = false, unique = true)
+    @Schema(description = "Unique email address of the user")
     private String email;
 
     @Column(name = "password_hash", nullable = false, length = 60) // BCrypt hash length
+    @Schema(description = "BCrypt hash of the user's password")
     private String passwordHash;
 
     @Column(nullable = false)
+    @Schema(description = "Name of the user")
     private String name;
 
     @Column(name = "is_admin")
+    @Schema(description = "Flag indicating if the user is an admin")
     private boolean isAdmin = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Schema(description = "Set of reviews created by the user")
     private Set<Review> reviews = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at")
+    @Schema(description = "Datetime when the user was created")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @Schema(description = "Datetime when the user was last updated")
     private LocalDateTime updatedAt;
 
     public Long getId() {

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,22 +22,28 @@ import jakarta.persistence.Table;
 public class MenuItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Unique integer identifier of the menu item")
     private Long id;
 
     @Column(nullable = false, length = 100)
+    @Schema(description = "Name of the menu item, up to 100 characters")
     private String name;
 
     @Column(length = 1000)
+    @Schema(description = "Description of the menu item, up to 1000 characters")
     private String description;
 
     @Column(nullable = false, precision = 10, scale = 2)
+    @Schema(description = "Price of the menu item")
     private BigDecimal price;
 
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL)
+    @Schema(description = "Set of reviews for the menu item")
     private Set<Review> reviews = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "menu_item_categories", joinColumns = @JoinColumn(name = "menu_item_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @Schema(description = "Set of categories that the menu item belongs to")
     private Set<Category> categories = new HashSet<>();
 
     public Long getId() {
