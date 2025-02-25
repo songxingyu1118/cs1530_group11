@@ -1,32 +1,29 @@
 package com.example.cs1530.dto.Auth;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+/**
+ * Request object for user registration
+ */
 public class RegisterRequest {
-    private String name;
+    @Schema(description = "User email address", required = true)
     private String email;
+
+    @Schema(description = "User password", required = true)
     private String password;
 
-    // Getters and setters
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Schema(description = "User full name", required = true)
+    private String name;
 
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getName() {
+        return name;
     }
 }
