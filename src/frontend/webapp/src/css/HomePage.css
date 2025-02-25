@@ -1,0 +1,5 @@
+/* Homepage Gutters */
+.content-section {
+    padding: 2vw 4vw;
+    backdrop-filter: blur(5px);
+}

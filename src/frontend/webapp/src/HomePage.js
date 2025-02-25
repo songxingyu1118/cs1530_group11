@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './HomePage.css';
+import './css/HomePage.css';
+
+import LoremIpsum from './components/LoremIpsum';
 
 function HomePage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -23,13 +25,15 @@ function HomePage() {
 
   return (
     <div className="homepage-container">
-      <header className="header">
-        <h1>Restaurant dish ratings</h1>
-      </header>
+      
 
-      {error && <p className="error">{error}</p>}
+      <section className="content-section">
+        <section className="ratings">
+          <h1>Restaurant dish ratings</h1>
+        </section>
 
-      <section className="menu-items-section">
+        {error && <p className="error">{error}</p>}
+
         <h2>List of dishes</h2>
         {menuItems.length === 0 ? (
           <p>No dishes yet</p>
@@ -42,7 +46,21 @@ function HomePage() {
             ))}
           </ul>
         )}
+
+        <div>
+          <LoremIpsum />
+          <LoremIpsum />
+          <LoremIpsum />
+          <LoremIpsum />
+          <LoremIpsum />
+          <LoremIpsum />
+          <LoremIpsum />
+        </div>
       </section>
+
+      
+
+
     </div>
   );
 }
