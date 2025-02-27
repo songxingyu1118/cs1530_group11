@@ -1,6 +1,5 @@
 package com.example.cs1530.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,9 +38,9 @@ public class MenuItem {
     @Schema(description = "Description of the menu item, up to 1000 characters")
     private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 2)
     @Schema(description = "Price of the menu item")
-    private BigDecimal price;
+    private Double price;
 
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL)
     @Schema(description = "Set of reviews for the menu item")
@@ -86,11 +85,11 @@ public class MenuItem {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

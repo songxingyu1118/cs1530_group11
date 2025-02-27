@@ -1,6 +1,5 @@
 package com.example.cs1530.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.entity.Review;
 import com.example.cs1530.repository.MenuItemRepository;
+import com.example.cs1530.spec.MenuItemSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -22,7 +22,13 @@ public class MenuItemService {
         return menuItemRepository.findAll();
     }
 
-    public MenuItem saveMenuItem(String name, String description, BigDecimal price, Set<Long> categoryIds) {
+    public List<MenuItem> filterMenuItems(String query, Long categoryId, Double priceMin, Double priceMax,
+            int starsMin, int starsMax) {
+        return menuItemRepository
+                .find(MenuItemSpecification.withFilters(query, categoryId, priceMin, priceMax, starsMin, starsMax));
+    }
+
+    public MenuItem saveMenuItem(String name, String description, Double price, Set<Long> categoryIds) {
         MenuItem menuItem = new MenuItem();
         menuItem.setName(name);
         menuItem.setDescription(description);
@@ -62,7 +68,7 @@ public class MenuItemService {
     }
 
     public List<MenuItem> getMenuItemsByCategory(Long categoryId) {
-        return menuItemRepository.findByCategoriesId(categoryId);
+        return menuItemRepository.findByCategory(categoryId);
     }
 
     public double getAverageRating(Long menuItemId) {
@@ -81,7 +87,7 @@ public class MenuItemService {
         if (menuItem.getName() == null || menuItem.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Menu item name cannot be empty");
         }
-        if (menuItem.getPrice() == null || menuItem.getPrice().compareTo(BigDecimal.ZERO) < 0) {
+        if (menuItem.getPrice() == null || menuItem.getPrice() <= 0) {
             throw new IllegalArgumentException("Menu item price must be non-negative");
         }
     }

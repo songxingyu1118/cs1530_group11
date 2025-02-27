@@ -1,6 +1,5 @@
 package com.example.cs1530.dto.menuitem;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ public class MenuItemDto {
     private String description;
 
     @Schema(description = "Price of the menu item")
-    private BigDecimal price;
+    private Double price;
 
     @Schema(description = "Datetime when the menu item was created")
     private LocalDateTime createdAt;
@@ -43,7 +42,7 @@ public class MenuItemDto {
         return description;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 

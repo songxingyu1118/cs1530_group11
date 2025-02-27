@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cs1530.dto.menuitem.CreateMenuItemRequest;
@@ -24,17 +25,26 @@ public class MenuController {
     @Autowired
     private MenuItemService menuItemService;
 
-    @Operation(summary = "Get all menu items")
-    @GetMapping("/items")
-    public ResponseEntity<List<MenuItemDto>> getAllMenuItems() {
-        return ResponseEntity.ok(menuItemService.getAllMenuItems().stream().map(MenuItem::toDto).toList());
-    }
-
     @Operation(summary = "Create a new menu item")
-    @PostMapping("/items")
+    @PostMapping("/")
     public ResponseEntity<MenuItemDto> createMenuItem(CreateMenuItemRequest request) {
         MenuItem savedMenuItem = menuItemService.saveMenuItem(request.getName(), request.getDescription(),
                 request.getPrice(), request.getCategoryIds());
         return ResponseEntity.ok(savedMenuItem.toDto());
+    }
+
+    @Operation(summary = "Get a single menu item by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<MenuItemDto> getMenuItemById(Long id) {
+        return ResponseEntity.ok(menuItemService.getMenuItemById(id).toDto());
+    }
+
+    @Operation(summary = "Get all menu items with filtering")
+    @GetMapping("/items")
+    public ResponseEntity<List<MenuItemDto>> getAllMenuItems(@RequestParam(required = false) String query,
+            @RequestParam(required = false) Long categoryId, @RequestParam(required = false) Double priceMin,
+            @RequestParam(required = false) Double priceMax, @RequestParam(required = false) Double starsMin,
+            @RequestParam(required = false) Double starsMax) {
+        return ResponseEntity.ok(menuItemService.getAllMenuItems().stream().map(MenuItem::toDto).toList());
     }
 }
