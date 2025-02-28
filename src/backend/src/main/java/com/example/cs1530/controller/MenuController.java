@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class MenuController {
 
     @Operation(summary = "Create a new menu item")
     @PostMapping("/")
-    public ResponseEntity<MenuItemDto> createMenuItem(CreateMenuItemRequest request) {
+    public ResponseEntity<MenuItemDto> createMenuItem(@RequestBody CreateMenuItemRequest request) {
         MenuItem savedMenuItem = menuItemService.saveMenuItem(request.getName(), request.getDescription(),
                 request.getPrice(), request.getCategoryIds());
         return ResponseEntity.ok(savedMenuItem.toDto());
