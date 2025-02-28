@@ -1,4 +1,4 @@
-package com.example.cs1530.dto.auth;
+package com.example.cs1530.dto.Auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

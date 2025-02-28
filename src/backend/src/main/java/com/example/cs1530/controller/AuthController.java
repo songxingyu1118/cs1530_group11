@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.cs1530.dto.auth.LoginRequest;
+import com.example.cs1530.dto.Auth.LoginRequest;
 import com.example.cs1530.entity.User;
 import com.example.cs1530.service.AuthService;
 
