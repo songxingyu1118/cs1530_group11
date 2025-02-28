@@ -46,5 +46,8 @@ public class MenuController {
             @RequestParam(required = false) Long categoryId, @RequestParam(required = false) Double priceMin,
             @RequestParam(required = false) Double priceMax, @RequestParam(required = false) Integer starsMin,
             @RequestParam(required = false) Integer starsMax) {
+        return ResponseEntity
+                .ok(menuItemService.filterMenuItems(query, categoryId, priceMin, priceMax, starsMin, starsMax).stream()
+                        .map(MenuItem::toDto).toList());
     }
 }
