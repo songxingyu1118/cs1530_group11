@@ -46,7 +46,7 @@ public class JwtTokenProvider {
     /**
      * Get user email from JWT token
      */
-    public String getUserEmailFromJwt(String token) {
+    public String getUserEmailFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
