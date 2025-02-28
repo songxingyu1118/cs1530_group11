@@ -1,18 +1,8 @@
 package com.example.cs1530.controller;
 
-import com.example.cs1530.dto.Auth.LoginResponse;
-import com.example.cs1530.dto.Auth.RegisterRequest;
-import com.example.cs1530.dto.Auth.UpdateUserRequest;
-import com.example.cs1530.dto.Auth.UserDto;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.example.cs1530.dto.Auth.LoginRequest;
+import com.example.cs1530.dto.Auth.*;
 import com.example.cs1530.entity.User;
 import com.example.cs1530.service.AuthService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
