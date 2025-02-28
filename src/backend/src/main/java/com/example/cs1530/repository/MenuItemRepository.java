@@ -11,17 +11,10 @@ import com.example.cs1530.entity.MenuItem;
 
 @Repository
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
-    @Query("SELECT m FROM MenuItem m WHERE m.price >= :priceMin AND m.price <= :priceMax")
-    List<MenuItem> findByPriceBetween(Double priceMin, Double priceMax);
+    List<MenuItem> findAll();
 
-    @Query("SELECT m FROM MenuItem m WHERE m.name LIKE %:query% OR m.description LIKE %:query%")
-    List<MenuItem> findBySearchQuery(String query);
-
-    @Query("SELECT m FROM MenuItem m WHERE m.reviews.size > 0 AND AVG(m.reviews.rating) >= :starsMin AND AVG(m.reviews.rating) <= :starsMax")
-    List<MenuItem> findByStarsBetween(int starsMin, int starsMax);
+    List<MenuItem> findAll(Specification<MenuItem> spec);
 
     @Query("SELECT m FROM MenuItem m JOIN m.categories c WHERE c.id = :categoryId")
     List<MenuItem> findByCategory(Long categoryId);
-
-    List<MenuItem> find(Specification<MenuItem> spec);
 }
