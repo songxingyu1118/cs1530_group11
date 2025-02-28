@@ -4,14 +4,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.entity.Review;
 import com.example.cs1530.repository.MenuItemRepository;
-import com.example.cs1530.spec.MenuItemSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 
 @Service
 public class MenuItemService {
@@ -120,7 +123,7 @@ public class MenuItemService {
         return menuItemRepository.findByCategory(categoryId);
     }
 
-    public double getAverageRating(Long menuItemId) {
+    public Double getAverageRating(Long menuItemId) {
         MenuItem menuItem = getMenuItemById(menuItemId);
         if (menuItem.getReviews().isEmpty()) {
             return 0.0;
