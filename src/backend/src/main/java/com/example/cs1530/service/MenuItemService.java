@@ -24,6 +24,57 @@ public class MenuItemService {
 
     public List<MenuItem> filterMenuItems(String query, Long categoryId, Double priceMin, Double priceMax,
             Integer starsMin, Integer starsMax) {
+        Specification<MenuItem> spec = Specification.where(null);
+
+        if (query != null && !query.trim().isEmpty()) {
+            spec = spec.and((root, criteriaQuery, cb) -> cb.or(
+                    cb.like(cb.lower(root.get("name")), "%" + query.toLowerCase() + "%"),
+                    cb.like(cb.lower(root.get("description")), "%" + query.toLowerCase() + "%")));
+        }
+
+        if (categoryId != null) {
+            spec = spec.and((root, criteriaQuery, cb) -> cb.isMember(categoryId, root.get("categories")));
+        }
+
+        if (priceMin != null) {
+            spec = spec.and((root, criteriaQuery, cb) -> cb.greaterThanOrEqualTo(root.get("price"), priceMin));
+        }
+
+        if (priceMax != null) {
+            spec = spec.and((root, criteriaQuery, cb) -> cb.lessThanOrEqualTo(root.get("price"), priceMax));
+        }
+
+        if (starsMin != null) {
+            spec = spec.and((root, criteriaQuery, cb) -> {
+                criteriaQuery.distinct(true);
+
+                Subquery<Double> subquery = criteriaQuery.subquery(Double.class);
+                Root<MenuItem> subRoot = subquery.from(MenuItem.class);
+                Join<Object, Object> reviewJoin = subRoot.join("reviews");
+
+                subquery.select(cb.avg(reviewJoin.get("stars")))
+                        .where(cb.equal(subRoot.get("id"), root.get("id")));
+
+                return cb.greaterThanOrEqualTo(subquery, starsMin.doubleValue());
+            });
+        }
+
+        if (starsMax != null) {
+            spec = spec.and((root, criteriaQuery, cb) -> {
+                criteriaQuery.distinct(true);
+
+                Subquery<Double> subquery = criteriaQuery.subquery(Double.class);
+                Root<MenuItem> subRoot = subquery.from(MenuItem.class);
+                Join<Object, Object> reviewJoin = subRoot.join("reviews");
+
+                subquery.select(cb.avg(reviewJoin.get("stars")))
+                        .where(cb.equal(subRoot.get("id"), root.get("id")));
+
+                return cb.lessThanOrEqualTo(subquery, starsMax.doubleValue());
+            });
+        }
+
+        return menuItemRepository.findAll(spec);
     }
 
     public MenuItem saveMenuItem(String name, String description, Double price, Set<Long> categoryIds) {
