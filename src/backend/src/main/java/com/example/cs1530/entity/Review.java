@@ -28,9 +28,9 @@ public class Review {
     @Schema(description = "Unique integer identifier of the review")
     private Long id;
 
-    @Min(0)
-    @Max(5)
-    @Schema(description = "Number of stars given in the review")
+    @Min(2)
+    @Max(10)
+    @Schema(description = "Number of stars given in the review (2-10 represented on a 1-5 scale)")
     private Integer stars;
 
     @Column(length = 1000)
