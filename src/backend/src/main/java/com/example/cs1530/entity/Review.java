@@ -31,7 +31,7 @@ public class Review {
     @Min(0)
     @Max(5)
     @Schema(description = "Number of stars given in the review")
-    private int stars;
+    private Integer stars;
 
     @Column(length = 1000)
     @Schema(description = "Content of the review, up to 1000 characters")
@@ -65,11 +65,11 @@ public class Review {
         this.id = id;
     }
 
-    public int getStars() {
+    public Integer getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(Integer stars) {
         this.stars = stars;
     }
 

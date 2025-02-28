@@ -23,9 +23,7 @@ public class MenuItemService {
     }
 
     public List<MenuItem> filterMenuItems(String query, Long categoryId, Double priceMin, Double priceMax,
-            int starsMin, int starsMax) {
-        return menuItemRepository
-                .find(MenuItemSpecification.withFilters(query, categoryId, priceMin, priceMax, starsMin, starsMax));
+            Integer starsMin, Integer starsMax) {
     }
 
     public MenuItem saveMenuItem(String name, String description, Double price, Set<Long> categoryIds) {

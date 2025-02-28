@@ -6,7 +6,7 @@ import com.example.cs1530.entity.Review;
 
 public class ReviewDto {
     private Long id;
-    private int stars;
+    private Integer stars;
     private String content;
     private Long menuItemId;
     private LocalDateTime createdAt;
@@ -16,7 +16,7 @@ public class ReviewDto {
         return id;
     }
 
-    public int getStars() {
+    public Integer getStars() {
         return stars;
     }
 

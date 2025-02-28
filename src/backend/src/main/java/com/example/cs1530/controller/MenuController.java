@@ -43,8 +43,7 @@ public class MenuController {
     @GetMapping("/items")
     public ResponseEntity<List<MenuItemDto>> getAllMenuItems(@RequestParam(required = false) String query,
             @RequestParam(required = false) Long categoryId, @RequestParam(required = false) Double priceMin,
-            @RequestParam(required = false) Double priceMax, @RequestParam(required = false) Double starsMin,
-            @RequestParam(required = false) Double starsMax) {
-        return ResponseEntity.ok(menuItemService.getAllMenuItems().stream().map(MenuItem::toDto).toList());
+            @RequestParam(required = false) Double priceMax, @RequestParam(required = false) Integer starsMin,
+            @RequestParam(required = false) Integer starsMax) {
     }
 }
