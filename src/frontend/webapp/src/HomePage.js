@@ -3,6 +3,8 @@ import axios from 'axios';
 import './css/HomePage.css';
 
 import LoremIpsum from './components/LoremIpsum';
+import Hero from './components/Hero';
+
 
 function HomePage() {
   const [menuItems, setMenuItems] = useState([]);
@@ -25,8 +27,10 @@ function HomePage() {
 
   return (
     <div className="homepage-container">
-      
-
+      {
+        //<Navbar />}
+      }
+      <Hero />
       <section className="content-section">
         <section className="ratings">
           <h1>Restaurant dish ratings</h1>

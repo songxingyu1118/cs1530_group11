@@ -1,14 +1,12 @@
 .app-background {
   background-color: rgb(150 95 72);
-  background-image: url('../img/dark-wood.webp');
+  background-image: url('../media/dark-wood.webp');
   background-size: cover;
   background-attachment: fixed;
 }
 
 .app-container {
   text-align: center;
-  margin-left: 10vw;
-  margin-right: 10vw;
 } 
 
 body {
