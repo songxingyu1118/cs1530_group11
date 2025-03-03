@@ -1,7 +1,6 @@
 package com.example.cs1530.service;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -99,9 +98,10 @@ public class MenuItemService {
         return menuItemRepository.save(menuItem);
     }
 
-    public MenuItem getMenuItemById(Long id) {
+    public MenuItem getMenuItem(Long id) {
         return menuItemRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Menu item not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        this.getClass().getName() + ": Menu item not found with id " + id));
     }
 
     public MenuItem updateMenuItem(Long id, String name, String description, String imagePath, Double price,
@@ -134,7 +134,7 @@ public class MenuItemService {
 
     public void deleteMenuItem(Long id) {
         if (!menuItemRepository.existsById(id)) {
-            throw new EntityNotFoundException("Menu item not found with id: " + id);
+            throw new EntityNotFoundException(this.getClass().getName() + ": Menu item not found with id " + id);
         }
         menuItemRepository.deleteById(id);
     }
@@ -144,7 +144,7 @@ public class MenuItemService {
     }
 
     public Double getAverageRating(Long menuItemId) {
-        MenuItem menuItem = getMenuItemById(menuItemId);
+        MenuItem menuItem = getMenuItem(menuItemId);
         if (menuItem.getReviews().isEmpty()) {
             return 0.0;
         }
@@ -157,10 +157,10 @@ public class MenuItemService {
 
     private void validateMenuItem(MenuItem menuItem) {
         if (menuItem.getName() == null || menuItem.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Menu item name cannot be empty");
+            throw new IllegalArgumentException(this.getClass().getName() + ": Menu item name cannot be empty");
         }
         if (menuItem.getPrice() == null || menuItem.getPrice() <= 0) {
-            throw new IllegalArgumentException("Menu item price must be non-negative");
+            throw new IllegalArgumentException(this.getClass().getName() + ": Menu item price must be non-negative");
         }
     }
 }
