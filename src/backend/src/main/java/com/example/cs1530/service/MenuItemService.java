@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.example.cs1530.entity.Category;
 import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.entity.Review;
+import com.example.cs1530.repository.CategoryRepository;
 import com.example.cs1530.repository.MenuItemRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -20,6 +22,9 @@ import jakarta.persistence.criteria.Subquery;
 public class MenuItemService {
     @Autowired
     private MenuItemRepository menuItemRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public List<MenuItem> getAllMenuItems() {
         return menuItemRepository.findAll();
@@ -85,7 +90,8 @@ public class MenuItemService {
         menuItem.setName(name);
         menuItem.setDescription(description);
         menuItem.setPrice(price);
-        // TODO: set categories
+        List<Category> categories = categoryRepository.findById(categoryIds);
+        menuItem.setCategories(categories);
 
         return menuItemRepository.save(menuItem);
     }
