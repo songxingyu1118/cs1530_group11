@@ -50,7 +50,7 @@ public class FileStorageService {
             Path targetLocation = this.fileStorageLocation.resolve(uniqueFilename);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return uniqueFilename;
+            return "/uploads/" + uniqueFilename;
         } catch (IOException e) {
             throw new RuntimeException(this.getClass().getName() + ": Failed to store file " + originalFilename, e);
         }
