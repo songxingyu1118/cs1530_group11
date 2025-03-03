@@ -23,21 +23,19 @@ public class FileStorageService {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception e) {
-            throw new RuntimeException(this.getClass().getName()
-                    + ": Error creating folder " + this.fileStorageLocation, e);
+            throw new RuntimeException("Error creating folder " + this.fileStorageLocation, e);
         }
     }
 
     public String storeFile(MultipartFile file) {
         if (file.isEmpty()) {
-            throw new RuntimeException(this.getClass().getName() + ": File is empty");
+            throw new RuntimeException("File is empty");
         }
 
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
 
         if (originalFilename.contains("..")) {
-            throw new RuntimeException(
-                    this.getClass().getName() + ": File name is not valid " + originalFilename);
+            throw new RuntimeException("File name is not valid " + originalFilename);
         }
 
         String fileExtension = "";
@@ -52,7 +50,7 @@ public class FileStorageService {
 
             return "/uploads/" + uniqueFilename;
         } catch (IOException e) {
-            throw new RuntimeException(this.getClass().getName() + ": Failed to store file " + originalFilename, e);
+            throw new RuntimeException("Failed to store file " + originalFilename, e);
         }
     }
 
@@ -65,7 +63,7 @@ public class FileStorageService {
             Path filePath = getFilePath(filename);
             return Files.deleteIfExists(filePath);
         } catch (IOException e) {
-            throw new RuntimeException(this.getClass().getName() + ": Error deleting file " + filename, e);
+            throw new RuntimeException("Error deleting file " + filename, e);
         }
     }
 }

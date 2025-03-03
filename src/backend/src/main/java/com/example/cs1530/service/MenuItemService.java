@@ -43,8 +43,7 @@ public class MenuItemService {
 
         if (categoryId != null) {
             categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            this.getClass().getName() + ": Category not found with ID " + categoryId));
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found with ID " + categoryId));
             spec = spec.and((root, criteriaQuery, cb) -> cb.isMember(categoryId, root.get("categories")));
         }
 
@@ -105,15 +104,13 @@ public class MenuItemService {
 
     public MenuItem getMenuItem(Long id) {
         return menuItemRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().getName() + ": Menu item not found with id " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Menu item not found with id " + id));
     }
 
     public MenuItem updateMenuItem(Long id, String name, String description, String imagePath, Double price,
             List<Long> categoryIds) {
         MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        this.getClass().getName() + ": Menu item not found with id " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Menu item not found with id " + id));
 
         if (name != null) {
             menuItem.setName(name);
@@ -141,7 +138,7 @@ public class MenuItemService {
 
     public void deleteMenuItem(Long id) {
         if (!menuItemRepository.existsById(id)) {
-            throw new EntityNotFoundException(this.getClass().getName() + ": Menu item not found with id " + id);
+            throw new EntityNotFoundException("Menu item not found with id " + id);
         }
         menuItemRepository.deleteById(id);
     }
@@ -164,10 +161,10 @@ public class MenuItemService {
 
     private void validateMenuItem(MenuItem menuItem) {
         if (menuItem.getName() == null || menuItem.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException(this.getClass().getName() + ": Menu item name cannot be empty");
+            throw new IllegalArgumentException("Menu item name cannot be empty");
         }
         if (menuItem.getPrice() == null || menuItem.getPrice() <= 0) {
-            throw new IllegalArgumentException(this.getClass().getName() + ": Menu item price must be non-negative");
+            throw new IllegalArgumentException("Menu item price must be non-negative");
         }
     }
 }
