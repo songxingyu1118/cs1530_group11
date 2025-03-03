@@ -147,6 +147,7 @@ public class MenuController {
     @Operation(summary = "Get all menu items with filtering", description = "Retrieves a list of menu items with optional filtering by various fields")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved menu items", content = @Content(schema = @Schema(implementation = MenuItemDto.class))),
+            @ApiResponse(responseCode = "404", description = "Categories not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @GetMapping("/items")
@@ -157,7 +158,6 @@ public class MenuController {
             @Parameter(description = "Maximum price for filtered items", example = "20.00", schema = @Schema(minimum = "0")) @RequestParam(required = false) Double priceMax,
             @Parameter(description = "Minimum star rating for filtered items (range: 2-10)", example = "4", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMin,
             @Parameter(description = "Maximum star rating for filtered items (range: 2-10)", example = "8", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMax) {
-
         try {
             List<MenuItemDto> items = menuItemService
                     .filterMenuItems(query, categoryId, priceMin, priceMax, starsMin, starsMax)
@@ -165,6 +165,9 @@ public class MenuController {
                     .map(MenuItem::toDto)
                     .toList();
             return ResponseEntity.ok(items);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "The requested categories were not found: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving menu items: " + e.getMessage(), e);

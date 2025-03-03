@@ -42,6 +42,9 @@ public class MenuItemService {
         }
 
         if (categoryId != null) {
+            categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            this.getClass().getName() + ": Category not found with ID " + categoryId));
             spec = spec.and((root, criteriaQuery, cb) -> cb.isMember(categoryId, root.get("categories")));
         }
 
