@@ -85,11 +85,14 @@ public class MenuItemService {
         return menuItemRepository.findAll(spec);
     }
 
-    public MenuItem saveMenuItem(String name, String description, Double price, Set<Long> categoryIds) {
+    public MenuItem saveMenuItem(String name, String description, String imagePath, Double price,
+            List<Long> categoryIds) {
         MenuItem menuItem = new MenuItem();
         menuItem.setName(name);
         menuItem.setDescription(description);
+        menuItem.setImagePath(imagePath);
         menuItem.setPrice(price);
+
         List<Category> categories = categoryRepository.findById(categoryIds);
         menuItem.setCategories(categories);
 
