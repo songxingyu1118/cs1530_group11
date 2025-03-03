@@ -17,4 +17,7 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
     @Query("SELECT m FROM MenuItem m JOIN m.categories c WHERE c.id = :categoryId")
     List<MenuItem> findByCategory(Long categoryId);
+
+    @Query("SELECT m FROM MenuItem m JOIN m.categories c WHERE c.id IN :categoryIds")
+    List<MenuItem> findByCategory(List<Long> categoryIds);
 }

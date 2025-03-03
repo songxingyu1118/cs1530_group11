@@ -38,6 +38,10 @@ public class MenuItem {
     @Schema(description = "Description of the menu item, up to 1000 characters")
     private String description;
 
+    @Column(name = "image_path", length = 255)
+    @Schema(description = "Path to the image file of the menu item")
+    private String imagePath;
+
     @Column(nullable = false, precision = 2)
     @Schema(description = "Price of the menu item")
     private Double price;
@@ -83,6 +87,14 @@ public class MenuItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Double getPrice() {

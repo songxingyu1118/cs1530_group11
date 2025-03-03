@@ -22,7 +22,7 @@ public class ReviewService {
         Review review = new Review();
         review.setContent(content);
         review.setStars(stars);
-        review.setMenuItem(menuItemService.getMenuItemById(menuItemId));
+        review.setMenuItem(menuItemService.getMenuItem(menuItemId));
         return reviewRepository.save(review);
     }
 

@@ -20,6 +20,9 @@ public class MenuItemDto {
     @Schema(description = "Price of the menu item")
     private Double price;
 
+    @Schema(description = "Path to the image file of the menu item")
+    private String imagePath;
+
     @Schema(description = "Datetime when the menu item was created")
     private LocalDateTime createdAt;
 
@@ -45,6 +48,10 @@ public class MenuItemDto {
         return price;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
     public List<Long> getCategoryIds() {
         return categoryIds;
     }
@@ -61,6 +68,7 @@ public class MenuItemDto {
         this.id = menuItem.getId();
         this.name = menuItem.getName();
         this.description = menuItem.getDescription();
+        this.imagePath = menuItem.getImagePath();
         this.price = menuItem.getPrice();
         this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId()).toList();
         this.createdAt = menuItem.getCreatedAt();
