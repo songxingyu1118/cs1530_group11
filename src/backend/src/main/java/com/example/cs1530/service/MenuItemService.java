@@ -1,5 +1,7 @@
 package com.example.cs1530.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +130,8 @@ public class MenuItemService {
         }
 
         validateMenuItem(menuItem);
+
+        menuItem.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
 
         return menuItemRepository.save(menuItem);
     }
