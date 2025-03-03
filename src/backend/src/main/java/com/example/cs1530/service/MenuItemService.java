@@ -104,21 +104,32 @@ public class MenuItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Menu item not found with id: " + id));
     }
 
-    public MenuItem updateMenuItem(Long id, MenuItem updatedItem) {
-        validateMenuItem(updatedItem);
+    public MenuItem updateMenuItem(Long id, String name, String description, String imagePath, Double price,
+            List<Long> categoryIds) {
+        MenuItem menuItem = menuItemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        this.getClass().getName() + ": Menu item not found with id " + id));
 
-        MenuItem existingItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Menu item not found with id: " + id));
-
-        existingItem.setName(updatedItem.getName());
-        existingItem.setDescription(updatedItem.getDescription());
-        existingItem.setPrice(updatedItem.getPrice());
-
-        if (updatedItem.getCategories() != null) {
-            existingItem.setCategories(updatedItem.getCategories());
+        if (name != null) {
+            menuItem.setName(name);
+        }
+        if (description != null) {
+            menuItem.setDescription(description);
+        }
+        if (imagePath != null) {
+            menuItem.setImagePath(imagePath);
+        }
+        if (price != null) {
+            menuItem.setPrice(price);
+        }
+        if (categoryIds != null) {
+            List<Category> categories = categoryRepository.findById(categoryIds);
+            menuItem.setCategories(categories);
         }
 
-        return menuItemRepository.save(existingItem);
+        validateMenuItem(menuItem);
+
+        return menuItemRepository.save(menuItem);
     }
 
     public void deleteMenuItem(Long id) {

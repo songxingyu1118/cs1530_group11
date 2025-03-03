@@ -54,6 +54,24 @@ public class MenuController {
         return ResponseEntity.ok(menuItemService.getMenuItem(id).toDto());
     }
 
+    @Operation(summary = "Update a menu item by ID")
+    @PutMapping("/{id}")
+    public ResponseEntity<MenuItemDto> updateMenuItem(Long id, @RequestParam("name") String name,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
+            @RequestParam("price") Double price,
+            @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds) {
+        String imagePath = fileStorageService.storeFile(imageFile);
+        MenuItem updatedMenuItem = menuItemService.updateMenuItem(id, name, description, imagePath, price, categoryIds);
+
+        return ResponseEntity.ok(updatedMenuItem.toDto());
+    }
+
+    @Operation(summary = "Delete a menu item by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMenuItem(Long id) {
+        menuItemService.deleteMenuItem(id);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Get all menu items with filtering")
