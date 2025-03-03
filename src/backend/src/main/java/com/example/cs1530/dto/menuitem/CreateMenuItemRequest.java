@@ -1,6 +1,6 @@
 package com.example.cs1530.dto.menuitem;
 
-import java.util.Set;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -8,14 +8,14 @@ public class CreateMenuItemRequest {
     @Schema(description = "Name of the menu item", required = true)
     private String name;
 
-    @Schema(description = "Description of the menu item")
+    @Schema(description = "Description of the menu item", required = false)
     private String description;
 
     @Schema(description = "Price of the menu item", required = true)
     private Double price;
 
-    @Schema(description = "Set of category IDs that the menu item belongs to")
-    private Set<Long> categoryIds;
+    @Schema(description = "Set of category IDs that the menu item belongs to", required = true)
+    private List<Long> categoryIds;
 
     public String getName() {
         return name;
@@ -29,7 +29,7 @@ public class CreateMenuItemRequest {
         return price;
     }
 
-    public Set<Long> getCategoryIds() {
+    public List<Long> getCategoryIds() {
         return categoryIds;
     }
 }

@@ -1,8 +1,7 @@
 package com.example.cs1530.dto.menuitem;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import com.example.cs1530.entity.MenuItem;
 
@@ -28,7 +27,7 @@ public class MenuItemDto {
     private LocalDateTime updatedAt;
 
     @Schema(description = "Set of category IDs that the menu item belongs to")
-    private Set<Long> categoryIds;
+    private List<Long> categoryIds;
 
     public Long getId() {
         return id;
@@ -46,7 +45,7 @@ public class MenuItemDto {
         return price;
     }
 
-    public Set<Long> getCategoryIds() {
+    public List<Long> getCategoryIds() {
         return categoryIds;
     }
 
@@ -63,8 +62,7 @@ public class MenuItemDto {
         this.name = menuItem.getName();
         this.description = menuItem.getDescription();
         this.price = menuItem.getPrice();
-        this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId())
-                .collect(Collectors.toSet());
+        this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId()).toList();
         this.createdAt = menuItem.getCreatedAt();
         this.updatedAt = menuItem.getUpdatedAt();
     }

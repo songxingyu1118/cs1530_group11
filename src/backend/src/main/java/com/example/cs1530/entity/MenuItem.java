@@ -1,8 +1,8 @@
 package com.example.cs1530.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -44,12 +44,12 @@ public class MenuItem {
 
     @OneToMany(mappedBy = "menuItem", cascade = CascadeType.ALL)
     @Schema(description = "Set of reviews for the menu item")
-    private Set<Review> reviews = new HashSet<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "menu_item_categories", joinColumns = @JoinColumn(name = "menu_item_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     @Schema(description = "Set of categories that the menu item belongs to")
-    private Set<Category> categories = new HashSet<>();
+    private List<Category> categories = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -93,19 +93,19 @@ public class MenuItem {
         this.price = price;
     }
 
-    public Set<Review> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(Set<Review> reviews) {
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
 
-    public Set<Category> getCategories() {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Category> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
