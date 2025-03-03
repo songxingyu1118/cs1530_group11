@@ -52,7 +52,10 @@ public class MenuController {
             @Parameter(description = "URL to the menu item's image") @RequestPart(value = "image", required = false) MultipartFile imageFile,
             @Parameter(description = "Price of the menu item", required = true, example = "10.99") @RequestParam("price") Double price,
             @Parameter(description = "List of category IDs that this menu item belongs to", example = "[]") @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds) {
-        String imagePath = fileStorageService.storeFile(imageFile);
+        String imagePath = null;
+        if (imageFile != null) {
+            imagePath = fileStorageService.storeFile(imageFile);
+        }
 
         MenuItem savedMenuItem = menuItemService.saveMenuItem(name, description, imagePath, price, categoryIds);
 
@@ -81,7 +84,11 @@ public class MenuController {
             @Parameter(description = "URL to the menu item's image") @RequestPart(value = "image", required = false) MultipartFile imageFile,
             @Parameter(description = "Price of the menu item", required = true, example = "10.99") @RequestParam("price") Double price,
             @Parameter(description = "List of category IDs that this menu item belongs to", example = "[]") @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds) {
-        String imagePath = fileStorageService.storeFile(imageFile);
+        String imagePath = null;
+        if (imageFile != null) {
+            imagePath = fileStorageService.storeFile(imageFile);
+        }
+
         MenuItem updatedMenuItem = menuItemService.updateMenuItem(id, name, description, imagePath, price,
                 categoryIds);
 
