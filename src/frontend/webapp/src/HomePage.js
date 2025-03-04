@@ -30,7 +30,7 @@ function HomePage() {
       {
         //<Navbar />}
       }
-      <Hero />
+      {/* <Hero /> */}
       <section className="content-section">
         <section className="ratings">
           <h1>Restaurant dish ratings</h1>
