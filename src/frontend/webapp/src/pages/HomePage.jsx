@@ -44,23 +44,19 @@ function HomePage() {
 
   return (
     <div className="homepage-container">
-      <h1 className="text-4xl">Menu Items</h1>
+      <h1 className="text-4xl mb-4">Menu Items</h1>
+      <Separator className="my-2"/> 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {menuItems.map((item) => (
           <MenuItem 
             title={item.name}
             description={item.description}
-            //rating={item.rating}
-            rating={4.5}
+            rating={Math.floor((Math.random() * 11)) / 2}
             price={item.price}
             image={spaghetti}
           /> 
         ))}
       </div>
-
-      <Separator className="my-6"/>      
-        
-      
       <Separator className="my-6"/>
       <LoremIpsum />
       <LoremIpsum />
