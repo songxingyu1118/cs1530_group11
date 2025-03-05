@@ -1,24 +1,72 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '@/css/HomePage.scss'
 
 import { Button } from "@/components/ui/Button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircle, Menu } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+
 import { LoremIpsum } from "@/components/LoremIpsum"
+import { MenuItem } from '@/components/MenuItem'
+
+import spaghetti from '@/media/spaghetti-temp.jpg'
+
 
 function HomePage() {
-  const [count, setCount] = useState(0)
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch menu items when component mounts
+    const fetchMenuItems = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/menu/items');
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        setMenuItems(data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchMenuItems();
+  }, []);
+
+  if (loading) return <div>Loading menu items...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="home-container">
-      Hello WORLD
-      <a className="mx-4" href="/login"><Button>CLICK!</Button></a>
-      
-      <div className="">
-        <LoremIpsum />
+    <div className="homepage-container">
+      <h1 className="text-4xl">Menu Items</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {menuItems.map((item) => (
+          <MenuItem 
+            title={item.name}
+            description={item.description}
+            //rating={item.rating}
+            rating={4.5}
+            price={item.price}
+            image={spaghetti}
+          /> 
+        ))}
       </div>
+
+      <Separator className="my-6"/>      
+        
       
-      
+      <Separator className="my-6"/>
+      <LoremIpsum />
+      <LoremIpsum />
+      <LoremIpsum />
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;
