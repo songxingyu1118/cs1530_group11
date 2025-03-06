@@ -40,7 +40,17 @@ function HomePage() {
   }, []);
 
   if (loading) return <div>Loading menu items...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (error) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Fetch Error</AlertTitle>
+        <AlertDescription>
+          Could not fetch menu items
+        </AlertDescription>
+      </Alert>
+    </div>
+  );
 
   return (
     <div className="homepage-container">

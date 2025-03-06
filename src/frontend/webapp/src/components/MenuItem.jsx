@@ -59,7 +59,7 @@ function MenuItem({title, description, rating, price, image}) {
                                     <img src={image} alt={title} className='rounded-md' />
                                 </div>
                                 
-                                <div className='flex flex-col justify-evenly'>
+                                <div className='flex flex-col text-left'>
                                     <h1 className='text-xl font-bold text-black'>{title}</h1>
                                     <p className="line-clamp-3 md:line-clamp-4 lg:line-clamp-6 xl:line-clamp-8 text-neutral-400">{description}</p>
                                 </div>                        
