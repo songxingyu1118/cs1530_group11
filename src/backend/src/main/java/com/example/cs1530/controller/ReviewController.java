@@ -59,6 +59,40 @@ public class ReviewController {
         }
     }
 
+    @Operation(summary = "Get a single review by ID", description = "Retrieves a specific review")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Review found", content = @Content(schema = @Schema(implementation = ReviewDto.class))),
+            @ApiResponse(responseCode = "404", description = "Review not found")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<ReviewDto> getReview(
+            @Parameter(description = "ID of the review to retrieve", required = true, example = "1") @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(reviewService.getReviewById(id).toDto());
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Delete a review by ID", description = "Removes a review from the database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Review deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Review not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReview(
+            @Parameter(description = "ID of the review to delete", required = true, example = "1") @PathVariable Long id) {
+        try {
+            reviewService.deleteReview(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error deleting review: " + e.getMessage(), e);
+        }
+    }
 
     @Operation(summary = "Get all reviews for a user", description = "Retrieves all reviews created by a specific user")
     @ApiResponses(value = {
