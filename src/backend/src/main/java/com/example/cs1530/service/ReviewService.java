@@ -26,12 +26,12 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
-    }
-
     public List<Review> getReviewsByMenuItemId(Long menuItemId) {
         return reviewRepository.findByMenuItemId(menuItemId);
+    }
+
+    public List<Review> getReviewsByUserId(Long userId) {
+        return reviewRepository.findByUserId(userId);
     }
 
     public Double getAverageRatingForMenuItem(Long menuItemId) {
