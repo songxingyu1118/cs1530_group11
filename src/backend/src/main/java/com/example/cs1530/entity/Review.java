@@ -70,6 +70,9 @@ public class Review {
     }
 
     public void setStars(Integer stars) {
+        if (stars < 2 || stars > 10) {
+            throw new IllegalArgumentException("Stars must be between 2 and 10");
+        }
         this.stars = stars;
     }
 
