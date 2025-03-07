@@ -46,6 +46,10 @@ public class ReviewService {
         return sum / reviews.size();
     }
 
+    public Integer getReviewCountForMenuItem(Long menuItemId) {
+        return getReviewsByMenuItemId(menuItemId).size();
+    }
+
     public Review updateReview(Long id, Review updatedReview) {
         Optional<Review> existingReview = reviewRepository.findById(id);
 

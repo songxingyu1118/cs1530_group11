@@ -135,5 +135,25 @@ public class ReviewController {
                     "Error retrieving reviews: " + e.getMessage(), e);
         }
     }
+
+    @Operation(summary = "Get satatistics for a menu item", description = "Retrieves statistics for a specific menu item including average rating and number of reviews")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved statistics", content = @Content(schema = @Schema(implementation = ReviewStatisticDto.class))),
+            @ApiResponse(responseCode = "404", description = "Menu item not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @GetMapping("/menu-item/{id}/statistics")
+    public ResponseEntity<ReviewStatisticDto> getStatisticsForMenuItem(
+            @Parameter(description = "ID of the menu item to get statistics for", required = true, example = "1") @PathVariable Long id) {
+        try {
+            Double averageRating = reviewService.getAverageRatingForMenuItem(id);
+            Integer reviewCount = reviewService.getReviewCountForMenuItem(id);
+            return ResponseEntity.ok(new ReviewStatisticDto(averageRating, reviewCount));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error retrieving statistics: " + e.getMessage(), e);
+        }
     }
 }
