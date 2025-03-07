@@ -38,6 +38,28 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    @Operation(summary = "Create a new review", description = "Creates a new review for a menu item")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Review created successfully", content = @Content(schema = @Schema(implementation = ReviewDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Menu item not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @PostMapping("/")
+    public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody CreateReviewRequest request) {
+        try {
+            Review savedReview = reviewService.saveReview(request.getContent(), request.getStars(),
+                    request.getMenuItemId());
+            return ResponseEntity.ok(savedReview.toDto());
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error creating review: " + e.getMessage(), e);
+        }
+    }
+
+
     @Operation(summary = "Get all reviews for a user", description = "Retrieves all reviews created by a specific user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved reviews", content = @Content(schema = @Schema(implementation = ReviewDto.class))),
