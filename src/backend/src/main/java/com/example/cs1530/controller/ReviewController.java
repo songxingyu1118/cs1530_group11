@@ -28,6 +28,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -43,16 +45,22 @@ public class ReviewController {
             @ApiResponse(responseCode = "200", description = "Review created successfully", content = @Content(schema = @Schema(implementation = ReviewDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "404", description = "Menu item not found"),
+            @ApiResponse(responseCode = "409", description = "Constraint violation"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PostMapping("/")
     public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody CreateReviewRequest request) {
         try {
+            // TODO: implement user auth and set the user ID in the request
             Review savedReview = reviewService.saveReview(request.getContent(), request.getStars(),
                     request.getMenuItemId());
             return ResponseEntity.ok(savedReview.toDto());
-        } catch (RuntimeException e) {
+        } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (ConstraintViolationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Constraint violation: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error creating review: " + e.getMessage(), e);
@@ -69,8 +77,11 @@ public class ReviewController {
             @Parameter(description = "ID of the review to retrieve", required = true, example = "1") @PathVariable Long id) {
         try {
             return ResponseEntity.ok(reviewService.getReviewById(id).toDto());
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found with ID: " + id, e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error retrieving review: " + e.getMessage(), e);
         }
     }
 
@@ -86,8 +97,8 @@ public class ReviewController {
         try {
             reviewService.deleteReview(id);
             return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found with ID: " + id, e);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error deleting review: " + e.getMessage(), e);
@@ -109,6 +120,8 @@ public class ReviewController {
                     .map(Review::toDto)
                     .toList();
             return ResponseEntity.ok(reviews);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu item not found with ID: " + id, e);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving reviews: " + e.getMessage(), e);
@@ -130,6 +143,8 @@ public class ReviewController {
                     .map(Review::toDto)
                     .toList();
             return ResponseEntity.ok(reviews);
+        } catch (EntityNotFoundException e) { // TODO: needs to actually be implemented and thrown in the service
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + id, e);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving reviews: " + e.getMessage(), e);
@@ -149,8 +164,8 @@ public class ReviewController {
             Double averageRating = reviewService.getAverageRatingForMenuItem(id);
             Integer reviewCount = reviewService.getReviewCountForMenuItem(id);
             return ResponseEntity.ok(new ReviewStatisticDto(averageRating, reviewCount));
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu item not found with ID: " + id, e);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving statistics: " + e.getMessage(), e);
