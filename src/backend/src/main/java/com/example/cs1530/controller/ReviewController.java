@@ -94,6 +94,27 @@ public class ReviewController {
         }
     }
 
+    @Operation(summary = "Get all reviews for a menu item", description = "Retrieves all reviews for a specific menu item")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved reviews", content = @Content(schema = @Schema(implementation = ReviewDto.class))),
+            @ApiResponse(responseCode = "404", description = "Menu item not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @GetMapping("/menu-item/{id}")
+    public ResponseEntity<List<ReviewDto>> getReviewsByMenuItem(
+            @Parameter(description = "ID of the menu item to get reviews for", required = true, example = "1") @PathVariable Long id) {
+        try {
+            List<ReviewDto> reviews = reviewService.getReviewsByMenuItemId(id)
+                    .stream()
+                    .map(Review::toDto)
+                    .toList();
+            return ResponseEntity.ok(reviews);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error retrieving reviews: " + e.getMessage(), e);
+        }
+    }
+
     @Operation(summary = "Get all reviews for a user", description = "Retrieves all reviews created by a specific user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved reviews", content = @Content(schema = @Schema(implementation = ReviewDto.class))),
