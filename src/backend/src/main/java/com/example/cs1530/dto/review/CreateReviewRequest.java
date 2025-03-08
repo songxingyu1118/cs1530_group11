@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CreateReviewRequest {
     @Schema(description = "Number of stars given in the review", required = true)
-    private int stars;
+    private Integer stars;
 
     @Schema(description = "Content of the review, up to 1000 characters")
     private String content;
@@ -12,7 +12,7 @@ public class CreateReviewRequest {
     @Schema(description = "ID of the menu item that the review is for", required = true)
     private Long menuItemId;
 
-    public int getStars() {
+    public Integer getStars() {
         return stars;
     }
 
