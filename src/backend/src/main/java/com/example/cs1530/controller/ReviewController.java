@@ -117,7 +117,7 @@ public class ReviewController {
         try {
             List<ReviewDto> reviews = reviewService.getReviewsByMenuItemId(id)
                     .stream()
-                    .map(Review::toDto)
+                    .map(r -> r.toDto(true))
                     .toList();
             return ResponseEntity.ok(reviews);
         } catch (EntityNotFoundException e) {
@@ -140,7 +140,7 @@ public class ReviewController {
         try {
             List<ReviewDto> reviews = reviewService.getReviewsByUserId(id)
                     .stream()
-                    .map(Review::toDto)
+                    .map(r -> r.toDto(true))
                     .toList();
             return ResponseEntity.ok(reviews);
         } catch (EntityNotFoundException e) { // TODO: needs to actually be implemented and thrown in the service

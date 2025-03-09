@@ -3,6 +3,7 @@ package com.example.cs1530.dto.menuitem;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.cs1530.entity.Category;
 import com.example.cs1530.entity.MenuItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +31,10 @@ public class MenuItemDto {
     @Schema(description = "Timestamp when the menu item was last modified", example = "2025-03-01T00:00:00")
     private LocalDateTime updatedAt;
 
-    @Schema(description = "List of category IDs that this menu item belongs to", example = "[]")
+    @Schema(description = "List of category that this menu item belongs to", example = "[]")
+    private List<Category> categories = List.of();
+
+    @Schema(description = "List of category IDs that this menu item belongs to", example = "[1, 3, 2]")
     private List<Long> categoryIds;
 
     public Long getId() {
@@ -53,8 +57,8 @@ public class MenuItemDto {
         return imagePath;
     }
 
-    public List<Long> getCategoryIds() {
-        return categoryIds;
+    public List<Long> getCategories() {
+        return categories.stream().map(category -> category.getId()).toList();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -66,13 +70,21 @@ public class MenuItemDto {
     }
 
     public MenuItemDto(MenuItem menuItem) {
+        this(menuItem, false);
+    }
+
+    public MenuItemDto(MenuItem menuItem, boolean includeCategories) {
         this.id = menuItem.getId();
         this.name = menuItem.getName();
         this.description = menuItem.getDescription();
         this.imagePath = menuItem.getImagePath();
         this.price = menuItem.getPrice();
-        this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId()).toList();
         this.createdAt = menuItem.getCreatedAt();
         this.updatedAt = menuItem.getUpdatedAt();
+
+        this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId()).toList();
+        if (includeCategories) {
+            this.categories = menuItem.getCategories();
+        }
     }
 }
