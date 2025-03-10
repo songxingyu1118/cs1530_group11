@@ -23,6 +23,7 @@ import { faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons"
 import { LoremIpsum } from "@/components/LoremIpsum"
 
 
+
 function MenuItem({title, description, rating, price, image}) {
 
     const renderStars = (rating) => {
@@ -46,6 +47,8 @@ function MenuItem({title, description, rating, price, image}) {
         return stars;
       };
 
+    const imageSrc = image;
+
     return (
         <div className="">
 
@@ -56,7 +59,7 @@ function MenuItem({title, description, rating, price, image}) {
                         <CardDescription>
                             <div className='flex flex-row gap-4'>
                                 <div class="flex-none w-1/2">
-                                    <img src={image} alt={title} className='rounded-md' />
+                                    <img src={imageSrc} alt={title} className='rounded-md' />
                                 </div>
                                 
                                 <div className='flex flex-col text-left'>

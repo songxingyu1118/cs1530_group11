@@ -8,14 +8,18 @@ import { Separator } from '@/components/ui/separator'
 
 import { LoremIpsum } from "@/components/LoremIpsum"
 import { MenuItem } from '@/components/MenuItem'
+import { NavBar } from '@/components/NavBar'
 
 import spaghetti from '@/media/spaghetti-temp.jpg'
+import missingIcon from '@/media/question-missing.jpg';
 
 
 function HomePage() {
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const menuSectionList = ["Sushi", "Burgers", "Pizza", "Drinks", "Salads", "Pasta", "Dessert", "Sushi", "Burgers", "Pizza", "Drinks", "Salads", "Pasta", "Dessert", "Sushi", "Burgers", "Pizza", "Drinks", "Salads", "Pasta", "Dessert"]
 
   useEffect(() => {
     // Fetch menu items when component mounts
@@ -54,17 +58,21 @@ function HomePage() {
 
   return (
     <div className="homepage-container">
+      <div className='sticky top-0 nav-bar'>
+        <NavBar menuSections={menuSectionList}/>
+      </div>
       <h1 className="text-4xl mb-4">Menu Items</h1>
       <Separator className="my-2"/> 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {menuItems.map((item) => (
           <MenuItem 
+            key={item.id}
             title={item.name}
             description={item.description}
             rating={Math.floor((Math.random() * 11)) / 2}
             price={item.price}
-            image={spaghetti}
-          /> 
+            image={item.imagePath ? `http://localhost:8080${item.imagePath}` : missingIcon}
+          />
         ))}
       </div>
       <Separator className="my-6"/>
