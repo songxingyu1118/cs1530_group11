@@ -5,6 +5,8 @@ import './css/index.css'
 import HomePage from '@/pages/HomePage.jsx'
 import LoginPage from '@/pages/LoginPage.jsx'
 import RegisterPage from '@/pages/RegisterPage.jsx'
+import Cart from '@/pages/Cart.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <div>
@@ -15,6 +17,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
     </div>
