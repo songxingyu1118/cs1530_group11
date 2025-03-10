@@ -19,7 +19,8 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const menuSectionList = ["Sushi", "Burgers", "Pizza", "Drinks", "Salads", "Pasta", "Dessert", "Sushi", "Burgers", "Pizza", "Drinks", "Salads", "Pasta", "Dessert", "Sushi", "Burgers", "Pizza", "Drinks", "Salads", "Pasta", "Dessert"]
+  const menuSectionList = ["Burgers", "Sushi", "Pizza", "Drinks", "Salads", "Pasta", "Dessert"]
+  
 
   useEffect(() => {
     // Fetch menu items when component mounts
@@ -50,7 +51,7 @@ function HomePage() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Fetch Error</AlertTitle>
         <AlertDescription>
-          Could not fetch menu items
+          Could not fetch menu items. Is the backend running?
         </AlertDescription>
       </Alert>
     </div>
@@ -63,6 +64,15 @@ function HomePage() {
       </div>
       <h1 className="text-4xl mb-4">Menu Items</h1>
       <Separator className="my-2"/> 
+      {menuSectionList.map((section) => (
+        <div id={section} className='scroll-wrapper'>
+          <h2 className="text-4xl section-title scroll-mt-8 mt-4 mb-2">{section}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          </div>
+          <Separator className='my-2'/>
+        </div>
+      ))}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {menuItems.map((item) => (
           <MenuItem 
