@@ -26,7 +26,8 @@ function NavBar({menuSections}) {
                             <Button>{item}</Button>
                         </Link>
                     ))}
-                    <ScrollBar orientation='horizontal' className="bg-red-600"/>
+                    {/* Scroll Bar Background and Color stilll need implemented */}
+                    <ScrollBar orientation='horizontal' className="bg-gray-600"/>
                 </ScrollArea>
                 
                 <div className='flex gap-2'>
