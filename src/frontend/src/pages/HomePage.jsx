@@ -10,7 +10,6 @@ import { LoremIpsum } from "@/components/LoremIpsum";
 import { MenuItem } from '@/components/MenuItem';
 import { NavBar } from '@/components/NavBar';
 
-import spaghetti from '@/media/spaghetti-temp.jpg';
 import missingIcon from '@/media/question-missing.jpg';
 
 
@@ -26,7 +25,7 @@ function HomePage() {
     // Fetch menu items when component mounts
     const fetchMenuItems = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/menu/items');
+        const response = await fetch('/api/menu/items');
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -82,7 +81,7 @@ function HomePage() {
             description={item.description}
             rating={Math.floor((Math.random() * 11)) / 2}
             price={item.price}
-            image={item.imagePath ? `http://localhost:8080${item.imagePath}` : missingIcon}
+            image={item.imagePath ? item.imagePath : missingIcon}
           />
         ))}
       </div>
