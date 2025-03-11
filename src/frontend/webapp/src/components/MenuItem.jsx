@@ -16,11 +16,15 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/Button"
+
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons"
+import { faStar, faStarHalfAlt, faCartShopping } from "@fortawesome/free-solid-svg-icons"
 
 import { LoremIpsum } from "@/components/LoremIpsum"
+
+
 
 
 
@@ -54,6 +58,7 @@ function MenuItem({title, description, rating, price, image}) {
 
             <Dialog>
                 <DialogTrigger>
+                    {/* Menu Item Card */}
                     <Card>
                         <CardContent>
                         <CardDescription>
@@ -78,13 +83,21 @@ function MenuItem({title, description, rating, price, image}) {
                             <div className="text-neutral-400">${price}</div>
                         </CardFooter>
                     </Card>
+                {/* Information that appears when clicking on a menu item below */}
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[725px]">
                     <DialogHeader>
                     <DialogTitle>
-                        <div className='flex flex-row gap-3 items-center'>
-                            {title}
-                            <div className='text-neutral-400 text-xs'>{price}</div>
+                        <div className='flex flex-row items-cente justify-between'>
+                            <div className='flex flex-row gap-3 items-center'>
+                                {title}
+                                <div className='text-neutral-400 text-xs'>{price}</div>
+                            </div>
+                            
+                            <Button className='me-5'>
+                                Add to cart 
+                                <FontAwesomeIcon icon={faCartShopping} className="" /> 
+                            </Button>
                         </div>
                     </DialogTitle>
                     <DialogDescription>
