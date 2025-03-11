@@ -89,12 +89,12 @@ function MenuItem({title, description, rating, price, image}) {
                     <DialogHeader>
                     <DialogTitle>
                         <div className='flex flex-row items-cente justify-between'>
-                            <div className='flex flex-row gap-3 items-center'>
+                            <div className='flex flex-row gap-1 md:gap-3 items-center'>
                                 {title}
                                 <div className='text-neutral-400 text-xs'>{price}</div>
                             </div>
                             
-                            <Button className='me-5'>
+                            <Button className='me-5 ms-4 md:ms-0'>
                                 Add to cart 
                                 <FontAwesomeIcon icon={faCartShopping} className="" /> 
                             </Button>
@@ -106,6 +106,7 @@ function MenuItem({title, description, rating, price, image}) {
                                 {description}
                             </div>
                         </ScrollArea>
+                        
                     </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
