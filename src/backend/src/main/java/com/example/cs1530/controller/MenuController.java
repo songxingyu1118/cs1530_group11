@@ -162,7 +162,7 @@ public class MenuController {
             List<MenuItemDto> items = menuItemService
                     .filterMenuItems(query, categoryId, priceMin, priceMax, starsMin, starsMax)
                     .stream()
-                    .map(MenuItem::toDto)
+                    .map(m -> m.toDto(false))
                     .toList();
             return ResponseEntity.ok(items);
         } catch (EntityNotFoundException e) {

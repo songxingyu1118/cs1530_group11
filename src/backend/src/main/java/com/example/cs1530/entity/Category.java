@@ -7,6 +7,8 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.cs1530.dto.category.CategoryDto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -92,5 +94,13 @@ public class Category {
 
     public void setMenuItems(List<MenuItem> menuItems) {
         this.menuItems = menuItems;
+    }
+
+    public CategoryDto toDto() {
+        return new CategoryDto(this);
+    }
+
+    public CategoryDto toDto(boolean includeMenuItems) {
+        return new CategoryDto(this, includeMenuItems);
     }
 }

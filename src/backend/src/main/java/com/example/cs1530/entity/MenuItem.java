@@ -140,4 +140,8 @@ public class MenuItem {
     public MenuItemDto toDto() {
         return new MenuItemDto(this);
     }
+
+    public MenuItemDto toDto(boolean includeCategories) {
+        return new MenuItemDto(this, includeCategories);
+    }
 }
