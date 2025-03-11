@@ -1,5 +1,5 @@
-import { useState } from 'react'
-//import { LoremIpsum } from "@/components/LoremIpsum"
+// LoginPage.jsx
+import { useState } from 'react';
 import '@/css/LoginPage.scss';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,10 +19,7 @@ function LoginPage() {
     setLoading(true);
     setError('');
 
-    const payload = {
-      email: email,
-      password: password,
-    };
+    const payload = { email, password };
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -39,9 +36,22 @@ function LoginPage() {
       }
       const data = await response.json();
       localStorage.setItem('token', data.token);
+
+      // Get the current user by token {id, name, email}
+      try {
+        const userResponse = await fetch(`/api/auth/users/me?token=${data.token}`);
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          // Store the username in localStorage so the NavBar can read it
+          localStorage.setItem('username', userData.name);
+        }
+      } catch (userFetchErr) {
+        console.error('Failed to fetch user info:', userFetchErr);
+      }
+
       console.log("Login Success!", data);
-      navigate('/'); // go to home page after successful login
-      
+      // go back to home
+      navigate('/');
     } catch (err) {
       console.error(err);
       setError('An error occurred during login');
@@ -49,7 +59,7 @@ function LoginPage() {
     setLoading(false);
   };
 
-  // add register button jump to register
+  // go to register
   const handleRegister = () => {
     navigate('/register');
   };
@@ -101,4 +111,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage
+export default LoginPage;

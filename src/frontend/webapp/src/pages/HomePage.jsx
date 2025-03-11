@@ -65,7 +65,8 @@ function HomePage() {
       <h1 className="text-4xl mb-4">Menu Items</h1>
       <Separator className="my-2"/> 
       {menuSectionList.map((section) => (
-        <div id={section} className='scroll-wrapper'>
+        // add key
+        <div id={section} className='scroll-wrapper' key={section}> 
           <h2 className="text-4xl section-title scroll-mt-8 mt-4 mb-2">{section}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
