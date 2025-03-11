@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router'
-import { Button } from "@/components/ui/Button"
+import { Link } from 'react-router';
+import { Button } from "@/components/ui/button";
 
-function LoginButton({}) {
+function LoginButton({ }) {
     return (
         <Link to="/login">
             <Button size="rounded">Log In</Button>

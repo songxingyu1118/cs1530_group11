@@ -1,15 +1,15 @@
 import React from 'react';
 
-import { Button } from "@/components/ui/Button"
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { LoginButton } from '@/components/LoginButton';
 
 import { Link, useNavigate } from 'react-router-dom';  // <-- Change it to 'react-router-dom'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
-import '@/css/Components.scss'
+import '@/css/Components.scss';
 
 function NavBar({ menuSections }) {
     const [activeIndex, setActiveIndex] = React.useState(null);
