@@ -2,7 +2,7 @@ function Cart() {
 
   return (
     <div>
-        This is the cart
+      This is the cart
     </div>
   );
 }

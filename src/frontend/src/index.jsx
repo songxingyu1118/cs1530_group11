@@ -1,11 +1,11 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router';
-import './css/index.css'
-import HomePage from '@/pages/HomePage.jsx'
-import LoginPage from '@/pages/LoginPage.jsx'
-import RegisterPage from '@/pages/RegisterPage.jsx'
-import Cart from '@/pages/Cart.jsx'
+import './index.css';
+import HomePage from '@/pages/HomePage.jsx';
+import LoginPage from '@/pages/LoginPage.jsx';
+import RegisterPage from '@/pages/RegisterPage.jsx';
+import Cart from '@/pages/Cart.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -22,6 +22,4 @@ createRoot(document.getElementById('root')).render(
       </BrowserRouter>
     </div>
   </div>
-  
-  
-)
+);

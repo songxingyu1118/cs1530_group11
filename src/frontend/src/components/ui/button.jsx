@@ -17,8 +17,6 @@ const buttonVariants = cva(
           "border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        secondaryOutline:
-          "bg-secondary text-secondary-foreground border border-black shadow-xs hover:bg-secondary/20",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
@@ -27,7 +25,6 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
         icon: "size-9",
-        rounded: "h-9 px-4 py-2 has-[>svg]:px-3 rounded-full"
       },
     },
     defaultVariants: {
@@ -47,10 +44,10 @@ function Button({
   const Comp = asChild ? Slot : "button"
 
   return (
-    (<Comp
+    <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />)
+      {...props} />
   );
 }
 
