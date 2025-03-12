@@ -46,8 +46,8 @@ POSTCONDITIONS: "Menu Items" title and "Menu Items" fully exist in the main page
 ```
 
 ```
-IDENTIFIER: TEST-6-CATEGORY-FILTER
-TEST CASE: Check that "Category" link properly points to the "Menu Items" section.
+IDENTIFIER: TEST-6-CATEGORY-REDIRECT
+TEST CASE: Check that "Category" link properly redirects to the "Menu Items" section.
 PRECONDITIONS: None.
 EXECUTION STEPS:
 1. Press the "Burgers" button.
