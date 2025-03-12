@@ -1,5 +1,32 @@
 {
-  "name": "vite-project",
+  "name": "cs1530-group11-project",
+  "contributors": [
+    {
+      "name": "Elias Benbourenane",
+      "email": "elb222@pitt.edu",
+      "url": "https://github.com/eliasbenb"
+    },
+    {
+      "name": "Greyson Barsotti",
+      "email": "gjb46@pitt.edu",
+      "url": "https://github.com/thegbars"
+    },
+    {
+      "name": "Nick Cao",
+      "email": "ruc36@pitt.edu",
+      "url": "https://github.com/rucNick"
+    },
+    {
+      "name": "Xingcheng Qian",
+      "email": "xiq29@pitt.edu",
+      "url": "https://github.com/Xingcheng03"
+    },
+    {
+      "name": "Xingyu Song",
+      "email": "xis85@pitt.edu",
+      "url": "https://github.com/songxingyu1118"
+    }
+  ],
   "private": true,
   "version": "0.0.0",
   "type": "module",
