@@ -6,18 +6,28 @@ import HomePage from '@/pages/HomePage.jsx';
 import LoginPage from '@/pages/LoginPage.jsx';
 import RegisterPage from '@/pages/RegisterPage.jsx';
 import Cart from '@/pages/Cart.jsx';
+import { Footer } from '@/components/Footer';
+import { Separator } from '@/components/ui/separator';
 
+const MainWrapper = ({ children }) => {
+  return (
+    <div className='p-4 container max-w-6xl mx-auto'>
+      {children}
+      <Separator className="my-8" />
+      <Footer />
+    </div>
+  );
+};
 
 createRoot(document.getElementById('root')).render(
   <div>
-    {/* Content placed here will appear on every page */}
-    <div className="gutters bg-[#f4f4f4]">
+    <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<MainWrapper><HomePage /></MainWrapper>} />
+          <Route path="/cart" element={<MainWrapper><Cart /></MainWrapper>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
     </div>
