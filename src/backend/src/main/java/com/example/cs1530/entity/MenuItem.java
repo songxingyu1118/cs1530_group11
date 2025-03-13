@@ -137,6 +137,17 @@ public class MenuItem {
         this.updatedAt = updatedAt;
     }
 
+    public Double getRating() {
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+        return reviews.stream().mapToInt(Review::getStars).average().getAsDouble();
+    }
+
+    public int getReviewCount() {
+        return reviews.size();
+    }
+
     public MenuItemDto toDto() {
         return new MenuItemDto(this);
     }

@@ -167,4 +167,8 @@ public class MenuItemService {
             throw new IllegalArgumentException("Menu item price must be non-negative");
         }
     }
+
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
 }

@@ -2,7 +2,7 @@ package com.example.cs1530.dto.review;
 
 import java.time.LocalDateTime;
 
-import com.example.cs1530.entity.MenuItem;
+import com.example.cs1530.dto.menuitem.MenuItemDto;
 import com.example.cs1530.entity.Review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +19,7 @@ public class ReviewDto {
     private String content;
 
     @Schema(description = "The menu item being reviewed")
-    private MenuItem menuItem;
+    private MenuItemDto menuItem;
 
     @Schema(description = "ID of the menu item being reviewed", example = "42")
     private Long menuItemId;
@@ -40,6 +40,10 @@ public class ReviewDto {
 
     public String getContent() {
         return content;
+    }
+
+    public MenuItemDto getMenuItem() {
+        return menuItem;
     }
 
     public Long getMenuItemId() {
@@ -65,9 +69,11 @@ public class ReviewDto {
         this.createdAt = review.getCreatedAt();
         this.updatedAt = review.getUpdatedAt();
 
-        this.menuItemId = review.getMenuItem().getId();
         if (includeMenuItem) {
-            this.menuItem = review.getMenuItem();
+            this.menuItem = review.getMenuItem().toDto();
+            this.menuItemId = this.menuItem.getId();
+        } else {
+            this.menuItemId = review.getMenuItem().getId();
         }
     }
 }
