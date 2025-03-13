@@ -31,6 +31,12 @@ public class MenuItemDto {
     @Schema(description = "Timestamp when the menu item was last modified", example = "2025-03-01T00:00:00")
     private LocalDateTime updatedAt;
 
+    @Schema(description = "Average rating of the menu item", example = "4.5", minimum = "0", maximum = "5")
+    private Double rating;
+
+    @Schema(description = "Number of reviews for the menu item", example = "42")
+    private Integer reviewCount;
+
     @Schema(description = "List of category that this menu item belongs to", example = "[]")
     private List<Category> categories = List.of();
 
@@ -69,6 +75,14 @@ public class MenuItemDto {
         return updatedAt;
     }
 
+    public Double getRating() {
+        return rating;
+    }
+
+    public Integer getReviewCount() {
+        return reviewCount;
+    }
+
     public MenuItemDto(MenuItem menuItem) {
         this(menuItem, false);
     }
@@ -81,6 +95,8 @@ public class MenuItemDto {
         this.price = menuItem.getPrice();
         this.createdAt = menuItem.getCreatedAt();
         this.updatedAt = menuItem.getUpdatedAt();
+        this.rating = menuItem.getRating();
+        this.reviewCount = menuItem.getReviewCount();
 
         this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId()).toList();
         if (includeCategories) {
