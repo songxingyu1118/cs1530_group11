@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.cs1530.dto.category.CategoryDto;
 import com.example.cs1530.dto.menuitem.MenuItemDto;
 import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.service.FileStorageService;
@@ -171,6 +172,25 @@ public class MenuController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving menu items: " + e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Get all categories", description = "Retrieves a list of all menu categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved categories", content = @Content(schema = @Schema(implementation = CategoryDto.class))),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryDto>> getAllCategories(
+            @Parameter(description = "Whether to include menu items in the response", example = "false") @RequestParam(required = false) boolean includeMenuItems) {
+        try {
+            List<CategoryDto> categories = menuItemService.getAllCategories().stream()
+                    .map(c -> c.toDto(includeMenuItems))
+                    .toList();
+            return ResponseEntity.ok(categories);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error retrieving categories: " + e.getMessage(), e);
         }
     }
 }
