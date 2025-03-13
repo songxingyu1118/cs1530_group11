@@ -1,3 +1,20 @@
 {
-    "java.compile.nullAnalysis.mode": "disabled"
+    "java.compile.nullAnalysis.mode": "disabled",
+    "javascript.format.semicolons": "insert",
+    "javascript.preferences.quoteStyle": "single",
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+    },
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4
+    }
 }
