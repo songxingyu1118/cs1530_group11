@@ -3,7 +3,7 @@ package com.example.cs1530.dto.menuitem;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.cs1530.entity.Category;
+import com.example.cs1530.dto.category.CategoryDto;
 import com.example.cs1530.entity.MenuItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,7 +38,7 @@ public class MenuItemDto {
     private Integer reviewCount;
 
     @Schema(description = "List of category that this menu item belongs to", example = "[]")
-    private List<Category> categories = List.of();
+    private List<CategoryDto> categories;
 
     @Schema(description = "List of category IDs that this menu item belongs to", example = "[1, 3, 2]")
     private List<Long> categoryIds;
@@ -63,8 +63,12 @@ public class MenuItemDto {
         return imagePath;
     }
 
-    public List<Long> getCategories() {
-        return categories.stream().map(category -> category.getId()).toList();
+    public List<CategoryDto> getCategories() {
+        return categories;
+    }
+
+    public List<Long> getCategoryIds() {
+        return categoryIds;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -98,9 +102,11 @@ public class MenuItemDto {
         this.rating = menuItem.getRating();
         this.reviewCount = menuItem.getReviewCount();
 
-        this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId()).toList();
         if (includeCategories) {
-            this.categories = menuItem.getCategories();
+            this.categories = menuItem.getCategories().stream().map(c -> c.toDto()).toList();
+            this.categoryIds = this.categories.stream().map(c -> c.getId()).toList();
+        } else {
+            this.categoryIds = menuItem.getCategories().stream().map(c -> c.getId()).toList();
         }
     }
 }

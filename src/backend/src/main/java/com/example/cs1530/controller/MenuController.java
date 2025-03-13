@@ -158,12 +158,13 @@ public class MenuController {
             @Parameter(description = "Minimum price for filtered items", example = "5.00", schema = @Schema(minimum = "0")) @RequestParam(required = false) Double priceMin,
             @Parameter(description = "Maximum price for filtered items", example = "20.00", schema = @Schema(minimum = "0")) @RequestParam(required = false) Double priceMax,
             @Parameter(description = "Minimum star rating for filtered items (range: 2-10)", example = "4", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMin,
-            @Parameter(description = "Maximum star rating for filtered items (range: 2-10)", example = "8", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMax) {
+            @Parameter(description = "Maximum star rating for filtered items (range: 2-10)", example = "8", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMax,
+            @Parameter(description = "Whether to include category DTOs in the response", example = "false") @RequestParam(required = false) boolean includeCategories) {
         try {
             List<MenuItemDto> items = menuItemService
                     .filterMenuItems(query, categoryId, priceMin, priceMax, starsMin, starsMax)
                     .stream()
-                    .map(m -> m.toDto(false))
+                    .map(m -> m.toDto(includeCategories))
                     .toList();
             return ResponseEntity.ok(items);
         } catch (EntityNotFoundException e) {

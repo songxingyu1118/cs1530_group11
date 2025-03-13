@@ -20,7 +20,7 @@ public class CategoryDto {
     private String description;
 
     @Schema(description = "Associated menu items", example = "[]")
-    private List<MenuItemDto> menuItems = List.of();
+    private List<MenuItemDto> menuItems;
 
     @Schema(description = "Associated menu item IDs", example = "[1, 3, 2]")
     private List<Long> menuItemIds;
@@ -51,6 +51,14 @@ public class CategoryDto {
         return updatedAt;
     }
 
+    public List<MenuItemDto> getMenuItems() {
+        return menuItems;
+    }
+
+    public List<Long> getMenuItemIds() {
+        return menuItemIds;
+    }
+
     public CategoryDto(Category category) {
         this(category, false);
     }
@@ -62,9 +70,11 @@ public class CategoryDto {
         this.createdAt = category.getCreatedAt();
         this.updatedAt = category.getUpdatedAt();
 
-        this.menuItemIds = category.getMenuItems().stream().map(menuItem -> menuItem.getId()).toList();
         if (includeMenuItems) {
-            this.menuItems = category.getMenuItems().stream().map(MenuItemDto::new).toList();
+            this.menuItems = category.getMenuItems().stream().map(m -> m.toDto()).toList();
+            this.menuItemIds = this.menuItems.stream().map(m -> m.getId()).toList();
+        } else {
+            this.menuItemIds = category.getMenuItems().stream().map(m -> m.getId()).toList();
         }
     }
 }
