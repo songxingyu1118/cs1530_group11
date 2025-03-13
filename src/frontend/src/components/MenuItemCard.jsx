@@ -17,7 +17,7 @@ const MenuItemCard = ({ item }) => {
             <img
               src={item.imagePath}
               alt={item.name}
-              className="object-cover w-full h-full transition-transform hover:scale-110"
+              className="object-cover w-full h-full transition-transform hover:scale-105"
               onError={() => setImageError(true)}
             />
           </div>
