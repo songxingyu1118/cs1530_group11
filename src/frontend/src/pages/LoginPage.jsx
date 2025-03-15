@@ -1,7 +1,12 @@
-// LoginPage.jsx
 import { useState } from 'react';
-import '@/css/LoginPage.scss';
 import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { ChevronLeft, Loader2 } from "lucide-react";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -65,47 +70,96 @@ function LoginPage() {
   };
 
   return (
-    <div className="login-page">
-      <button className="go-back" onClick={handleGoBack}>Go Back</button>
-      <div className="login-container">
-        <h2>Welcome Back！</h2>
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleLogin}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="Please enter Email"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Please enter password"
-            />
-          </div>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Loading...' : 'Login'}
-          </button>
-        </form>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-background">
+      <div className="w-full max-w-md">
+        <Button
+          variant="ghost"
+          className="mb-4 flex items-center"
+          onClick={handleGoBack}
+        >
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Go Back
+        </Button>
 
-        {/*（or）*/}
-        <div className="separator">---------------------- or ----------------------</div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Welcome Back!</CardTitle>
+            <CardDescription className="text-center">
+              Enter your credentials to access your account
+            </CardDescription>
+          </CardHeader>
 
-        {/* message and Register button */}
-        <p className="register-text">Don't have an account? Go to Register</p>
-        <button className="register-button" onClick={handleRegister}>
-          Register
-        </button>
+          <CardContent>
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Please enter Email"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Please enter password"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  'Login'
+                )}
+              </Button>
+            </form>
+          </CardContent>
+
+          <div className="px-6 pb-2">
+            <div className="relative">
+              <Separator />
+              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+                or
+              </span>
+            </div>
+          </div>
+
+          <CardFooter className="flex-col space-y-4 pt-4">
+            <p className="text-sm text-center text-muted-foreground">
+              Don't have an account?
+            </p>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleRegister}
+            >
+              Register
+            </Button>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );
