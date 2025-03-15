@@ -106,7 +106,7 @@ function HomePage() {
 
   return (
     <div>
-      <div className="sticky top-0 bg-white pb-4 z-10">
+      <div className="sticky top-0 pb-4 z-10">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">CS 1530 Group 11</h1>
           <Sheet>
