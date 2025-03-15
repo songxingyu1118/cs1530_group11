@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '@/css/RegisterPage.scss';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChevronLeft, Loader2 } from "lucide-react";
 
 function RegisterPage() {
   const navigate = useNavigate();
-
   // form display
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   // error message and loading status
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,7 +30,6 @@ function RegisterPage() {
     e.preventDefault();
     setError('');
 
-    // Authen
     if (!nameRegex.test(name)) {
       setError('Name must contain only English letters (A-Za-z).');
       return;
@@ -43,14 +45,12 @@ function RegisterPage() {
 
     setLoading(true);
     try {
-      // format
       const payload = {
         name,
         email,
         password,
       };
 
-      // registeration submit
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -58,7 +58,6 @@ function RegisterPage() {
       });
 
       if (!response.ok) {
-        // error messgae
         const errorData = await response.json();
         setError(errorData.message || 'Registration failed. Please try again.');
         setLoading(false);
@@ -68,7 +67,6 @@ function RegisterPage() {
       const data = await response.json();
       console.log('Registration success!', data);
 
-      // jump to login after successful registed
       navigate('/login');
     } catch (err) {
       console.error(err);
@@ -78,61 +76,86 @@ function RegisterPage() {
   };
 
   return (
-    <div className="register-page">
-      <button className="go-back" onClick={handleGoBackToLogin}>
-        Go Back To Login
-      </button>
-      <div className="register-container">
-        <h2>Welcome to Register Page!</h2>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-background">
+      <div className="w-full max-w-md">
+        <Button
+          variant="ghost"
+          className="mb-4 flex items-center"
+          onClick={handleGoBackToLogin}
+        >
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Go Back To Login
+        </Button>
 
-        {/* error message */}
-        {error && <div className="error-message">{error}</div>}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Register</CardTitle>
+            <CardDescription className="text-center">
+              Create a new account to get started
+            </CardDescription>
+          </CardHeader>
 
-        <form onSubmit={handleRegister}>
-          {/* Name */}
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input
-              id="name"
-              type="text"
-              placeholder="Enter your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
+          <CardContent>
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-          {/* Email */}
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+            <form onSubmit={handleRegister} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
 
-          {/* Password */}
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
 
-          {/* submit button */}
-          <button type="submit" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
-          </button>
-        </form>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Registering...
+                  </>
+                ) : (
+                  'Register'
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
