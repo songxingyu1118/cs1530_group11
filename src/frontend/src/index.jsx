@@ -8,6 +8,7 @@ import RegisterPage from '@/pages/RegisterPage.jsx';
 import Cart from '@/pages/Cart.jsx';
 import FourOFour from '@/pages/FourOFour.jsx';
 
+import { NavBar } from '@/components/NavBar';
 import { Footer } from '@/components/Footer';
 import { Separator } from '@/components/ui/separator';
 import '@/index.css';
@@ -15,7 +16,8 @@ import '@/index.css';
 const MainWrapper = () => {
   return (
     <>
-      <div className='p-4 container max-w-6xl mx-auto'>
+      <div className='p-4 container max-w-7xl mx-auto'>
+        <NavBar />
         <Outlet />
         <Separator className="my-8" />
         <Footer />
