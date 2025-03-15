@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { LoginButton } from '@/components/LoginButton';
 
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -73,7 +72,9 @@ function NavBar({ menuSections }) {
           {isLoggedIn ? (
             <Button onClick={handleLogout}>Logout</Button>
           ) : (
-            <LoginButton />
+            <Link to="/login">
+              <Button size="rounded">Log In</Button>
+            </Link>
           )}
         </div>
       </div>
