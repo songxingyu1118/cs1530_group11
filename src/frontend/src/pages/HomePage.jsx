@@ -196,11 +196,14 @@ function HomePage() {
             <Separator className="ml-4 flex-1" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {/* If we have items for this section, show them */}
-            {section.menuItems.map((item) => (
-              <MenuItemCard key={item.id} item={item} />
-            ))}
+          <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pb-4">
+            <div className="flex space-x-4 sm:space-x-6 pb-2 pr-4">
+              {section.menuItems.map((item) => (
+                <div key={item.id} className="w-[180px] sm:w-[220px] md:w-[250px] lg:w-[280px] flex-none">
+                  <MenuItemCard item={item} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ))}
