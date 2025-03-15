@@ -16,8 +16,8 @@ import '@/index.css';
 const MainWrapper = () => {
   return (
     <>
+      <NavBar />
       <div className='p-4 container max-w-7xl mx-auto'>
-        <NavBar />
         <Outlet />
         <Separator className="my-8" />
         <Footer />
