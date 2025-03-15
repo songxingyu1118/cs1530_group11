@@ -19,11 +19,21 @@ function NavBar() {
     window.location.reload();
   };
 
+  const title = "IHOP";
+  const logo = "https://logos-world.net/wp-content/uploads/2021/08/IHOP-Logo.png";
+  const phone = "(123) 456-7890";
+  const location = "123 Main St, City, Country";
+  const color = "#5870e7";
+
   return (
     <div className="flex flex-col w-full">
-      <div className="bg-[#382E28] w-full">
+      <div className="w-full" style={{ "backgroundColor": color }}>
         <div className="max-w-7xl mx-auto relative px-4">
-          <div className="flex justify-end pt-4">
+          <div className="flex justify-between items-center pt-4">
+            <div className="flex items-center">
+              <img src={logo} className="h-12 sm:h-16" />
+            </div>
+
             <div className="flex items-center gap-2">
               {isLoggedIn && (
                 <span className="text-sm font-medium text-white mr-1 hidden sm:inline">
@@ -63,13 +73,17 @@ function NavBar() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center py-4">
-            <span className="text-5xl md:text-8xl font-bold my-3 text-white">Logo</span>
+          <div className="flex flex-col justify-center items-center py-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">{title}</h1>
             <div className="flex flex-col sm:flex-row justify-center gap-3 text-white text-sm md:text-base">
-              <span className="mx-2">Phone: (123) 456-7890</span>
+              <span className="mx-2">Phone: {phone}</span>
               <span className="hidden sm:inline">•</span>
-              <span className="mx-2">Location: 123 Main St, City, Country</span>
+              <span className="mx-2">Location: {location}</span>
             </div>
+          </div>
+
+          <div className="absolute bottom-2 left-4">
+            <span className="text-xs text-white opacity-70">{color}</span>
           </div>
         </div>
       </div>
