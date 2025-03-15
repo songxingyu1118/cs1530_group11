@@ -34,4 +34,6 @@ build/
 
 *.db
 
+# Static resources
+/public
 /uploads
