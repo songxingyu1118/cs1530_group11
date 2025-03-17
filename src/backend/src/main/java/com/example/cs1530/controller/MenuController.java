@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.cs1530.dto.category.CategoryDto;
 import com.example.cs1530.dto.menuitem.MenuItemDto;
 import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.service.FileStorageService;
@@ -157,12 +158,13 @@ public class MenuController {
             @Parameter(description = "Minimum price for filtered items", example = "5.00", schema = @Schema(minimum = "0")) @RequestParam(required = false) Double priceMin,
             @Parameter(description = "Maximum price for filtered items", example = "20.00", schema = @Schema(minimum = "0")) @RequestParam(required = false) Double priceMax,
             @Parameter(description = "Minimum star rating for filtered items (range: 2-10)", example = "4", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMin,
-            @Parameter(description = "Maximum star rating for filtered items (range: 2-10)", example = "8", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMax) {
+            @Parameter(description = "Maximum star rating for filtered items (range: 2-10)", example = "8", schema = @Schema(minimum = "2", maximum = "10")) @RequestParam(required = false) Integer starsMax,
+            @Parameter(description = "Whether to include category DTOs in the response", example = "false") @RequestParam(required = false) boolean includeCategories) {
         try {
             List<MenuItemDto> items = menuItemService
                     .filterMenuItems(query, categoryId, priceMin, priceMax, starsMin, starsMax)
                     .stream()
-                    .map(MenuItem::toDto)
+                    .map(m -> m.toDto(includeCategories))
                     .toList();
             return ResponseEntity.ok(items);
         } catch (EntityNotFoundException e) {
@@ -171,6 +173,25 @@ public class MenuController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving menu items: " + e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Get all categories", description = "Retrieves a list of all menu categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved categories", content = @Content(schema = @Schema(implementation = CategoryDto.class))),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryDto>> getAllCategories(
+            @Parameter(description = "Whether to include menu items in the response", example = "false") @RequestParam(required = false) boolean includeMenuItems) {
+        try {
+            List<CategoryDto> categories = menuItemService.getAllCategories().stream()
+                    .map(c -> c.toDto(includeMenuItems))
+                    .toList();
+            return ResponseEntity.ok(categories);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error retrieving categories: " + e.getMessage(), e);
         }
     }
 }

@@ -3,7 +3,7 @@ package com.example.cs1530.dto.review;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CreateReviewRequest {
-    @Schema(description = "Number of stars given in the review", required = true)
+    @Schema(description = "Number of stars given in the review", required = true, minimum = "2", maximum = "10", example = "4")
     private Integer stars;
 
     @Schema(description = "Content of the review, up to 1000 characters")

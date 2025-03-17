@@ -119,4 +119,8 @@ public class Review {
     public ReviewDto toDto() {
         return new ReviewDto(this);
     }
+
+    public ReviewDto toDto(boolean includeMenuItem) {
+        return new ReviewDto(this, includeMenuItem);
+    }
 }

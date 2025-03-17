@@ -3,6 +3,7 @@ package com.example.cs1530.dto.menuitem;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.cs1530.dto.category.CategoryDto;
 import com.example.cs1530.entity.MenuItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +31,16 @@ public class MenuItemDto {
     @Schema(description = "Timestamp when the menu item was last modified", example = "2025-03-01T00:00:00")
     private LocalDateTime updatedAt;
 
-    @Schema(description = "List of category IDs that this menu item belongs to", example = "[]")
+    @Schema(description = "Average rating of the menu item", example = "4.5", minimum = "0", maximum = "5")
+    private Double rating;
+
+    @Schema(description = "Number of reviews for the menu item", example = "42")
+    private Integer reviewCount;
+
+    @Schema(description = "List of category that this menu item belongs to", example = "[]")
+    private List<CategoryDto> categories;
+
+    @Schema(description = "List of category IDs that this menu item belongs to", example = "[1, 3, 2]")
     private List<Long> categoryIds;
 
     public Long getId() {
@@ -53,6 +63,10 @@ public class MenuItemDto {
         return imagePath;
     }
 
+    public List<CategoryDto> getCategories() {
+        return categories;
+    }
+
     public List<Long> getCategoryIds() {
         return categoryIds;
     }
@@ -65,14 +79,34 @@ public class MenuItemDto {
         return updatedAt;
     }
 
+    public Double getRating() {
+        return rating;
+    }
+
+    public Integer getReviewCount() {
+        return reviewCount;
+    }
+
     public MenuItemDto(MenuItem menuItem) {
+        this(menuItem, false);
+    }
+
+    public MenuItemDto(MenuItem menuItem, boolean includeCategories) {
         this.id = menuItem.getId();
         this.name = menuItem.getName();
         this.description = menuItem.getDescription();
         this.imagePath = menuItem.getImagePath();
         this.price = menuItem.getPrice();
-        this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId()).toList();
         this.createdAt = menuItem.getCreatedAt();
         this.updatedAt = menuItem.getUpdatedAt();
+        this.rating = menuItem.getRating();
+        this.reviewCount = menuItem.getReviewCount();
+
+        if (includeCategories) {
+            this.categories = menuItem.getCategories().stream().map(c -> c.toDto()).toList();
+            this.categoryIds = this.categories.stream().map(c -> c.getId()).toList();
+        } else {
+            this.categoryIds = menuItem.getCategories().stream().map(c -> c.getId()).toList();
+        }
     }
 }
