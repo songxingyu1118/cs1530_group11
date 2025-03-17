@@ -8,6 +8,7 @@ import RegisterPage from '@/pages/RegisterPage.jsx';
 import Cart from '@/pages/Cart.jsx';
 import FullMenuItem from '@/pages/FullMenuItem.jsx';
 import FourOFour from '@/pages/FourOFour.jsx';
+import AdminPage from '@/pages/AdminPage.jsx';
 
 import { NavBar } from '@/components/NavBar';
 import { Footer } from '@/components/Footer';
@@ -58,6 +59,10 @@ const router = createBrowserRouter(
     {
       path: '*',
       element: <FourOFour />,
+    },
+    {
+      path: '/admin',
+      element: <AdminPage />,
     },
   ],
   {
