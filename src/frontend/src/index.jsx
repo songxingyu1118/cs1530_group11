@@ -54,7 +54,10 @@ const router = createBrowserRouter(
     },
     {
       path: '/menu/:id',
-      element: <FullMenuItem />,
+      element: <MainWrapper />,
+      children: [
+        { index: true, element: <FullMenuItem /> },
+      ],
     },
     {
       path: '*',

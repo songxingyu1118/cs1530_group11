@@ -1,23 +1,20 @@
+import * as React from 'react';
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { StarRating } from "@/components/StarRating";
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
+import { ReviewList } from '@/components/ReviewList';
 
 
 
 const FullMenuItem = () => {
   const { id } = useParams();
-  const [item, setItem] = useState(null);
-  const [error, setError] = useState(null);
-
-  const [itemLoading, setItemLoading] = useState(true);
-  const [reviewsLoading, setReviewsLoading] = useState(true);
-  const [reviews, setReviews] = useState([]);
-  const [reviewsError, setReviewsError] = useState(null);
+  const [item, setItem] = React.useState(null);
+  const [error, setError] = React.useState(null);
+  const [itemLoading, setItemLoading] = React.useState(true);
 
   const fetchMenuItem = async () => {
     try {
@@ -34,36 +31,16 @@ const FullMenuItem = () => {
     }
   };
   
-  const fetchReviews = async () => {
-    try {
-      const response = await fetch(`/api/reviews/menu-item/${id}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      setReviews(data);
-      setReviewsLoading(false);
-    } catch (error) {
-      setReviewsError(error.message);
-      setReviewsLoading(false);
-    }
-  };
-
-  useEffect(() => {
+  React.useEffect(() => {
     fetchMenuItem();
-    fetchReviews();
   }, [id]);
 
-  if (itemLoading || reviewsLoading) {
+  if (itemLoading) {
     return <div className="container mx-auto py-8">Loading...</div>;
   }
 
   if (error) {
     return <div className="container mx-auto py-8">Error: {error}</div>;
-  }
-
-  if (reviewsError) {
-    return <div className="container mx-auto py-8">Error loading reviews: {reviewsError}</div>;
   }
 
   if (!item) {
@@ -123,36 +100,7 @@ const FullMenuItem = () => {
           </Card>
         </div>
 
-        {/* Reviews */}
-        <div className="col-span-1">
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold">Reviews</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ScrollArea className="h-[600px] pr-4">
-                {reviews.length > 0 ? (
-                  <div className="space-y-4">
-                    {reviews.map((review) => (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <StarRating rating={review.stars} />
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(review.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="text-sm">{review.content}</p>
-                        <Separator className="my-2" />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p>No reviews available for this item.</p>
-                )}
-              </ScrollArea>
-            </CardContent>
-          </Card>
-        </div>
+        <ReviewList menuItemId={id} />
       </div>
     </div>
   );
