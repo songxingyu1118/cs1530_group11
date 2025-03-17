@@ -28,7 +28,9 @@ const StarRating = ({ rating, reviewCount }) => {
         <Star key={`empty-${i}`} className="h-4 w-4 text-gray-300" />
       ))}
 
-      <span className="ml-1 text-sm text-gray-600">({reviewCount})</span>
+      {reviewCount !== undefined && (
+        <span className="ml-1 text-sm text-gray-600">({reviewCount})</span>
+      )}
     </div>
   );
 };

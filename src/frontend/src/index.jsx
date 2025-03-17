@@ -6,6 +6,7 @@ import HomePage from '@/pages/HomePage.jsx';
 import LoginPage from '@/pages/LoginPage.jsx';
 import RegisterPage from '@/pages/RegisterPage.jsx';
 import Cart from '@/pages/Cart.jsx';
+import FullMenuItem from '@/pages/FullMenuItem.jsx';
 import FourOFour from '@/pages/FourOFour.jsx';
 
 import { NavBar } from '@/components/NavBar';
@@ -49,6 +50,10 @@ const router = createBrowserRouter(
     {
       path: '/logout',
       element: <Navigate to='/login' replace />,
+    },
+    {
+      path: '/menu/:id',
+      element: <FullMenuItem />,
     },
     {
       path: '*',
