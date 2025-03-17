@@ -47,8 +47,8 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        // For development only - remove in production!
-        boolean passwordMatches = true; // passwordEncoder.matches(password, user.getPasswordHash());
+        // Properly check if the provided password matches the stored password hash
+        boolean passwordMatches = passwordEncoder.matches(password, user.getPasswordHash());
 
         if (!passwordMatches) {
             throw new RuntimeException("Invalid email or password");
@@ -56,6 +56,7 @@ public class AuthService {
 
         return tokenProvider.generateToken(user);
     }
+
 
     /**
      * Logout the current user (invalidate token)
