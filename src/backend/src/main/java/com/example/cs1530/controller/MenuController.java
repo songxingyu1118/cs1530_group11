@@ -2,6 +2,9 @@ package com.example.cs1530.controller;
 
 import java.util.List;
 
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +27,7 @@ import com.example.cs1530.dto.menuitem.MenuItemDto;
 import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.service.FileStorageService;
 import com.example.cs1530.service.MenuItemService;
+import com.example.cs1530.service.OpenAIService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,6 +45,9 @@ import jakarta.persistence.EntityNotFoundException;
 public class MenuController {
     @Autowired
     private MenuItemService menuItemService;
+
+    @Autowired
+    private OpenAIService openAIService;
 
     @Autowired
     private FileStorageService fileStorageService;
@@ -192,6 +199,49 @@ public class MenuController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving categories: " + e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Generate a menu item's description using an OpenAI compatible LLM", description = "Uses the menu item's description and user reviews to generate a summary of the item and its reviews")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully generated menu item description", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @GetMapping("/summary/{id}")
+    public ResponseEntity<String> generateMenuItemSummary(
+            @Parameter(description = "ID of the menu item to generate a summary for", required = true, example = "1") @PathVariable Long id) {
+        try {
+            MenuItem menuItem = menuItemService.getMenuItem(id);
+            String description = menuItem.getDescription();
+            String sentimentOverview = new StringBuilder()
+                    .append("Average Rating: ")
+                    .append(menuItem.getRating())
+                    .append("\n")
+                    .append("No. Reviews: ")
+                    .append(menuItem.getReviews().size())
+                    .toString();
+            String reviews = menuItem.getReviews().stream()
+                    .map(r -> new StringBuilder("Customer Review:\n\t")
+                            .append("Rating: ")
+                            .append(r.getStars())
+                            .append(", ")
+                            .append("Review Content: ")
+                            .append(r.getContent())
+                            .toString())
+                    .reduce("", (a, b) -> a + "\n" + b);
+            List<Message> messages = List.of(
+                    new SystemMessage(
+                            "Generate a description of the menu item by integrating its details and customer sentiment in a factual, concise manner, avoiding first-person or second-person pronouns, and summary phrases. Try to start with an aggrandized description of the menu item, followed by a neutral overview of the item's customer sentiment and reviews."),
+                    new UserMessage(description),
+                    new UserMessage(sentimentOverview),
+                    new UserMessage(reviews));
+
+            return ResponseEntity.ok(openAIService.complete(messages));
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu item not found with id: " + id, e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error generating menu item summary: " + e.getMessage(), e);
         }
     }
 }
