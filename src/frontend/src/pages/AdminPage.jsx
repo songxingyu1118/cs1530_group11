@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
 
 import {
   Card,
@@ -33,8 +32,12 @@ function AdminPage() {
   //Fetch items
   const fetchMenuItems = async () => {
     try {
-      const response = await axios.get('/api/menu/items');
-      setItems(response.data);
+      const response = await fetch('/api/menu/items');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setItems(data);
     } catch (error) {
       console.error('Failed to fetch menu items:', error);
     }
@@ -64,14 +67,21 @@ function AdminPage() {
         formData.append('image', imageFile);
       }
 
+      let response;
       if (editId) {
-        await axios.put(`/api/menu/${editId}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+        response = await fetch(`/api/menu/${editId}`, {
+          method: 'PUT',
+          body: formData,
         });
       } else {
-        await axios.post('/api/menu/', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+        response = await fetch('/api/menu/', {
+          method: 'POST',
+          body: formData,
         });
+      }
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
 
       // After success, reload items and clear the form
@@ -86,7 +96,14 @@ function AdminPage() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this menu item?')) return;
     try {
-      await axios.delete(`/api/menu/${id}`);
+      const response = await fetch(`/api/menu/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
       fetchMenuItems();
     } catch (error) {
       console.error('Failed to delete menu item:', error);
