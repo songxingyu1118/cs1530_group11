@@ -88,4 +88,3 @@ The system should be accessible across different devices, including desktops, ta
 • Data Integrity: Ratings and comments will be linked to individual users and menu items to ensure accurate and up-to-date data.
 3.7 Other Requirements
 Catchall section for any additional requirements.
-![image](https://github.com/user-attachments/assets/cff8e694-6c1a-46c6-aa71-4f0c8d8f4a3b)
