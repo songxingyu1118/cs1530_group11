@@ -10,7 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//Service for ECDH handshake and AES GCM encption
+//Service for ECDH handshake and AES GCM encryption
 @Service
 public class ECDHService {
     private final Logger logger = LoggerFactory.getLogger(ECDHService.class);
