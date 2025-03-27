@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, Loader2 } from "lucide-react";
+import { encrypt, getSessionId, isInitialized, initializeECDH } from '@/security/ecdhclient';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -24,9 +25,27 @@ function LoginPage() {
     setLoading(true);
     setError('');
 
-    const payload = { email, password };
-
     try {
+      // Make sure ECDH is initialized
+      if (!isInitialized()) {
+        await initializeECDH();
+      }
+
+      // Prepare credentials for encryption
+      const credentials = JSON.stringify({
+        email,
+        password
+      });
+
+      // Encrypt the credentials
+      const encryptedCredentials = await encrypt(credentials);
+
+      // Create the secure login request
+      const payload = {
+        sessionId: getSessionId(),
+        encryptedCredentials
+      };
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,7 +58,9 @@ function LoginPage() {
         setLoading(false);
         return;
       }
+
       const data = await response.json();
+
       localStorage.setItem('token', data.token);
 
       // Get the current user by token {id, name, email}
@@ -54,12 +75,12 @@ function LoginPage() {
         console.error('Failed to fetch user info:', userFetchErr);
       }
 
-      console.log("Login Success!", data);
+      console.log("Login Success!");
       // go back to home
       navigate('/');
     } catch (err) {
       console.error(err);
-      setError('An error occurred during login');
+      setError('An error occurred during login: ' + err.message);
     }
     setLoading(false);
   };
