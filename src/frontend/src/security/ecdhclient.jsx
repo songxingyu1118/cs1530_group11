@@ -31,6 +31,12 @@ export const base64ToArrayBuffer = (base64) => {
  */
 export const initializeECDH = async () => {
   try {
+    // Check if already initialized
+    if (securityContext.initialized) {
+      console.log('ECDH already initialized, session ID:', securityContext.sessionId);
+      return true;
+    }
+
     console.log('Starting ECDH key exchange...');
 
     // Generate client key pair
@@ -42,8 +48,10 @@ export const initializeECDH = async () => {
       true,
       ['deriveKey', 'deriveBits']
     );
+    console.log('Client keypair generated successfully');
 
     // Initiate handshake with server
+    console.log('Sending handshake initiation request to server...');
     const initiateResponse = await fetch('/api/ecdh/initiate', {
       method: 'POST'
     });
@@ -57,6 +65,7 @@ export const initializeECDH = async () => {
     const serverPublicKeyBase64 = data.serverPublicKey;
 
     console.log(`Received session ID: ${sessionId}`);
+    console.log('Received server public key (base64 encoded)');
 
     // Import server's public key
     const serverPublicKeyBytes = base64ToArrayBuffer(serverPublicKeyBase64);
@@ -70,12 +79,15 @@ export const initializeECDH = async () => {
       true,
       []
     );
+    console.log('Imported server public key successfully');
 
     // Export client's public key
     const clientPublicKeyBytes = await crypto.exportKey('spki', keyPair.publicKey);
     const clientPublicKeyBase64 = arrayBufferToBase64(clientPublicKeyBytes);
+    console.log('Exported client public key successfully');
 
     // Complete handshake with server
+    console.log('Sending handshake completion request to server...');
     const completeResponse = await fetch('/api/ecdh/complete', {
       method: 'POST',
       headers: {
@@ -90,8 +102,10 @@ export const initializeECDH = async () => {
     if (!completeResponse.ok) {
       throw new Error(`Handshake completion failed: ${completeResponse.status}`);
     }
+    console.log('Server confirmed handshake completion');
 
     // Derive shared secret
+    console.log('Deriving shared secret...');
     const sharedSecret = await crypto.deriveBits(
       {
         name: 'ECDH',
@@ -100,20 +114,27 @@ export const initializeECDH = async () => {
       keyPair.privateKey,
       256
     );
+    console.log('Shared secret derived successfully');
 
     // Initialize AES key
+    console.log('Initializing AES key from shared secret...');
     const aesKey = await initializeAESKey(sharedSecret);
+    console.log('AES key initialized successfully');
 
     // Set up the security context
     securityContext.sessionId = sessionId;
     securityContext.aesKey = aesKey;
     securityContext.initialized = true;
 
-    console.log('ECDH key exchange completed successfully!');
+    console.log('ECDH key exchange completed successfully! Session ID:', sessionId);
     return true;
   } catch (error) {
     console.error('ECDH key exchange failed:', error);
-    return false;
+    // Reset context on failure
+    securityContext.sessionId = null;
+    securityContext.aesKey = null;
+    securityContext.initialized = false;
+    throw error;
   }
 };
 
@@ -145,27 +166,40 @@ export const encrypt = async (data) => {
     throw new Error('Security not initialized. Run initializeECDH() first.');
   }
 
-  // Generate random IV
-  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  try {
+    console.log('Encrypting data with AES-GCM...');
 
-  // Encrypt data
-  const encodedData = new TextEncoder().encode(data);
-  const encryptedData = await crypto.encrypt(
-    {
-      name: 'AES-GCM',
-      iv
-    },
-    securityContext.aesKey,
-    encodedData
-  );
+    // Generate random IV
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    console.log('Generated random IV');
 
-  // Combine IV and encrypted data
-  const result = new Uint8Array(iv.byteLength + encryptedData.byteLength);
-  result.set(iv, 0);
-  result.set(new Uint8Array(encryptedData), iv.byteLength);
+    // Encrypt data
+    const encodedData = new TextEncoder().encode(data);
+    const encryptedData = await crypto.encrypt(
+      {
+        name: 'AES-GCM',
+        iv
+      },
+      securityContext.aesKey,
+      encodedData
+    );
+    console.log('Data encrypted successfully');
 
-  // Convert to Base64
-  return arrayBufferToBase64(result);
+    // Combine IV and encrypted data
+    const result = new Uint8Array(iv.byteLength + encryptedData.byteLength);
+    result.set(iv, 0);
+    result.set(new Uint8Array(encryptedData), iv.byteLength);
+    console.log('Combined IV and encrypted data');
+
+    // Convert to Base64
+    const base64Result = arrayBufferToBase64(result);
+    console.log('Encrypted data converted to Base64');
+
+    return base64Result;
+  } catch (error) {
+    console.error('Encryption failed:', error);
+    throw error;
+  }
 };
 
 /**
@@ -176,27 +210,41 @@ export const decrypt = async (encryptedData) => {
     throw new Error('Security not initialized. Run initializeECDH() first.');
   }
 
-  // Decode Base64
-  const encryptedBytes = base64ToArrayBuffer(encryptedData);
+  try {
+    console.log('Decrypting data with AES-GCM...');
 
-  // Extract IV (first 12 bytes)
-  const iv = encryptedBytes.slice(0, 12);
+    // Decode Base64
+    const encryptedBytes = base64ToArrayBuffer(encryptedData);
+    console.log('Decoded Base64 encrypted data');
 
-  // Extract ciphertext
-  const ciphertext = encryptedBytes.slice(12);
+    // Extract IV (first 12 bytes)
+    const iv = encryptedBytes.slice(0, 12);
+    console.log('Extracted IV from encrypted data');
 
-  // Decrypt data
-  const decryptedData = await crypto.decrypt(
-    {
-      name: 'AES-GCM',
-      iv
-    },
-    securityContext.aesKey,
-    ciphertext
-  );
+    // Extract ciphertext
+    const ciphertext = encryptedBytes.slice(12);
+    console.log('Extracted ciphertext from encrypted data');
 
-  // Convert to string
-  return new TextDecoder().decode(decryptedData);
+    // Decrypt data
+    const decryptedData = await crypto.decrypt(
+      {
+        name: 'AES-GCM',
+        iv
+      },
+      securityContext.aesKey,
+      ciphertext
+    );
+    console.log('Data decrypted successfully');
+
+    // Convert to string
+    const result = new TextDecoder().decode(decryptedData);
+    console.log('Decrypted data converted to string');
+
+    return result;
+  } catch (error) {
+    console.error('Decryption failed:', error);
+    throw error;
+  }
 };
 
 /**
@@ -229,10 +277,12 @@ export const secureApiCall = async (url, method, data) => {
     const response = await fetch(url, {
       method: method,
       headers: {
-        'Content-Type': 'text/plain',
-        'X-Session-ID': getSessionId()
+        'Content-Type': 'application/json',
       },
-      body: encryptedData
+      body: JSON.stringify({
+        sessionId: getSessionId(),
+        encryptedCredentials: encryptedData
+      })
     });
 
     if (!response.ok) {

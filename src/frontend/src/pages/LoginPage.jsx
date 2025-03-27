@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { ChevronLeft, Loader2 } from "lucide-react";
-import { encrypt, getSessionId, isInitialized, initializeECDH } from '@/security/ecdhclient';
+import { encrypt, decrypt, getSessionId, isInitialized, initializeECDH } from '@/security/ecdhclient';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -15,6 +15,24 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [securityInitialized, setSecurityInitialized] = useState(false);
+
+  // Initialize ECDH when component mounts
+  useEffect(() => {
+    const setupSecurity = async () => {
+      try {
+        if (!isInitialized()) {
+          await initializeECDH();
+        }
+        setSecurityInitialized(true);
+      } catch (err) {
+        console.error('Failed to initialize security:', err);
+        setError('Failed to initialize secure connection. Please try refreshing the page.');
+      }
+    };
+
+    setupSecurity();
+  }, []);
 
   const handleGoBack = () => {
     navigate('/');
@@ -25,13 +43,14 @@ function LoginPage() {
     setLoading(true);
     setError('');
 
-    try {
-      // Make sure ECDH is initialized
-      if (!isInitialized()) {
-        await initializeECDH();
-      }
+    if (!securityInitialized) {
+      setError('Secure connection not established. Please wait or refresh the page.');
+      setLoading(false);
+      return;
+    }
 
-      // Prepare credentials for encryption
+    try {
+      // Create credentials object
       const credentials = JSON.stringify({
         email,
         password
@@ -40,52 +59,76 @@ function LoginPage() {
       // Encrypt the credentials
       const encryptedCredentials = await encrypt(credentials);
 
+      // Get the session ID
+      const sessionId = getSessionId();
+
+      if (!sessionId) {
+        throw new Error('No session ID available. Security not properly initialized.');
+      }
+
       // Create the secure login request
       const payload = {
-        sessionId: getSessionId(),
+        sessionId,
         encryptedCredentials
       };
 
+      console.log('Sending secure login request with session ID:', sessionId);
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'Login failed, please check your email and password');
+        if (response.status === 400) {
+          setError('Session expired or invalid. Please refresh the page and try again.');
+        } else {
+          const errorData = await response.json().catch(() => ({}));
+          setError(errorData.message || 'Login failed. Please check your credentials.');
+        }
         setLoading(false);
         return;
       }
 
       const data = await response.json();
 
-      localStorage.setItem('token', data.token);
-
-      // Get the current user by token {id, name, email}
       try {
-        const userResponse = await fetch(`/api/auth/users/me?token=${data.token}`);
+        // Decrypt the encrypted token
+        console.log('Decrypting token...');
+        const decryptedToken = await decrypt(data.token);
+        console.log('Token decrypted successfully');
+
+        // Store the decrypted token
+        localStorage.setItem('token', decryptedToken);
+
+        // Get the current user using the decrypted token
+        const userResponse = await fetch(`/api/auth/users/me?token=${encodeURIComponent(decryptedToken)}`);
         if (userResponse.ok) {
           const userData = await userResponse.json();
-          // Store the username in localStorage so the NavBar can read it
           localStorage.setItem('username', userData.name);
+          console.log('User data retrieved successfully:', userData.name);
+        } else {
+          console.error('Failed to fetch user data:', userResponse.status);
         }
-      } catch (userFetchErr) {
-        console.error('Failed to fetch user info:', userFetchErr);
+      } catch (err) {
+        console.error('Error processing token:', err);
+        setError(`Error processing login response: ${err.message}`);
+        setLoading(false);
+        return;
       }
 
       console.log("Login Success!");
-      // go back to home
       navigate('/');
     } catch (err) {
-      console.error(err);
-      setError('An error occurred during login: ' + err.message);
+      console.error('Login error:', err);
+      setError(`An error occurred during login: ${err.message}`);
     }
     setLoading(false);
   };
 
-  // go to register
   const handleRegister = () => {
     navigate('/register');
   };
@@ -145,12 +188,17 @@ function LoginPage() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={loading}
+                disabled={loading || !securityInitialized}
               >
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Loading...
+                  </>
+                ) : !securityInitialized ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Initializing secure connection...
                   </>
                 ) : (
                   'Login'
