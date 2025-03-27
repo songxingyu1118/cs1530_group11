@@ -26,6 +26,16 @@ export const base64ToArrayBuffer = (base64) => {
   return bytes;
 };
 
+// Store session ID in localStorage
+export const storeSessionId = (sessionId) => {
+  localStorage.setItem('ecdh_session_id', sessionId);
+};
+
+// Retrieve session ID from localStorage
+export const getStoredSessionId = () => {
+  return localStorage.getItem('ecdh_session_id');
+};
+
 /**
  * Initialize ECDH key exchange
  */
@@ -34,7 +44,15 @@ export const initializeECDH = async () => {
     // Check if already initialized
     if (securityContext.initialized) {
       console.log('ECDH already initialized, session ID:', securityContext.sessionId);
-      return true;
+      return { success: true, sessionId: securityContext.sessionId };
+    }
+
+    // Check for stored session ID
+    const storedSessionId = getStoredSessionId();
+    if (storedSessionId) {
+      console.log('Found stored session ID:', storedSessionId);
+      // We can't restore the session directly since crypto keys are non-extractable
+      // But we can use the stored ID to validate with the server if needed
     }
 
     console.log('Starting ECDH key exchange...');
@@ -126,8 +144,11 @@ export const initializeECDH = async () => {
     securityContext.aesKey = aesKey;
     securityContext.initialized = true;
 
+    // Store session ID in localStorage
+    storeSessionId(sessionId);
+
     console.log('ECDH key exchange completed successfully! Session ID:', sessionId);
-    return true;
+    return { success: true, sessionId };
   } catch (error) {
     console.error('ECDH key exchange failed:', error);
     // Reset context on failure
@@ -251,7 +272,7 @@ export const decrypt = async (encryptedData) => {
  * Get the current session ID
  */
 export const getSessionId = () => {
-  return securityContext.sessionId;
+  return securityContext.sessionId || getStoredSessionId();
 };
 
 /**
