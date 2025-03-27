@@ -13,7 +13,21 @@ import AdminPage from '@/pages/AdminPage.jsx';
 import { NavBar } from '@/components/NavBar';
 import { Footer } from '@/components/Footer';
 import { Separator } from '@/components/ui/separator';
+import { initializeECDH } from '@/security/ecdhclient';
 import '@/index.css';
+
+// Initialize ECDH handshake
+const initSecurity = async () => {
+  try {
+    console.log('Initializing secure communication...');
+    await initializeECDH();
+  } catch (error) {
+    console.warn('Failed to initialize secure communication:', error);
+  }
+};
+
+// Initialize security in the background
+initSecurity();
 
 const MainWrapper = () => {
   return (
