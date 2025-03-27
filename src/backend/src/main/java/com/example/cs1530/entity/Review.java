@@ -28,10 +28,10 @@ public class Review {
     @Schema(description = "Unique integer identifier of the review")
     private Long id;
 
-    @Min(0)
-    @Max(5)
-    @Schema(description = "Number of stars given in the review")
-    private int stars;
+    @Min(2)
+    @Max(10)
+    @Schema(description = "Number of stars given in the review (2-10 represented on a 1-5 scale)")
+    private Integer stars;
 
     @Column(length = 1000)
     @Schema(description = "Content of the review, up to 1000 characters")
@@ -65,11 +65,14 @@ public class Review {
         this.id = id;
     }
 
-    public int getStars() {
+    public Integer getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(Integer stars) {
+        if (stars < 2 || stars > 10) {
+            throw new IllegalArgumentException("Stars must be between 2 and 10");
+        }
         this.stars = stars;
     }
 
@@ -115,5 +118,9 @@ public class Review {
 
     public ReviewDto toDto() {
         return new ReviewDto(this);
+    }
+
+    public ReviewDto toDto(boolean includeMenuItem) {
+        return new ReviewDto(this, includeMenuItem);
     }
 }
