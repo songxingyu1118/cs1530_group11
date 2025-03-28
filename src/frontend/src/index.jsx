@@ -121,6 +121,10 @@ const router = createBrowserRouter(
       path: '/admin',
       element: <AdminPage />,
     },
+    {
+      path: '/cart',
+      element: <Cart />,
+    },
   ],
   {
     basename: BASE_URL,
