@@ -1,0 +1,837 @@
+{
+  "id": "675e1758-a3b9-4c99-8f86-d8d45a92fa9c",
+  "version": "2.0",
+  "name": "cs1530_group11",
+  "url": "https://cs1530.elias.eu.org/",
+  "tests": [{
+    "id": "5f982d59-cd59-44f2-8729-635930f27156",
+    "name": "TEST-1-GENRAL-INFO-EXIST",
+    "commands": [{
+      "id": "de85ce3f-63c0-4145-87fa-295b055b316e",
+      "comment": "",
+      "command": "open",
+      "target": "https://cs1530.elias.eu.org/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a1d39f05-8a1d-4cc3-813c-77d6378b9fd7",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.sm\\3Atext-3xl",
+      "targets": [
+        ["css=.sm\\3Atext-3xl", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/h1", "xpath:idRelative"],
+        ["xpath=//h1", "xpath:position"],
+        ["xpath=//h1[contains(.,'IHOP')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "fa6a8c4a-242c-472e-9904-3e20679859b1",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.gap-8 > div:nth-child(1)",
+      "targets": [
+        ["css=.gap-8 > div:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div[3]/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div/div/div[3]/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ed9e1f9b-cc7d-42c2-bae0-897e14b06174",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.gap-8 > div:nth-child(2)",
+      "targets": [
+        ["css=.gap-8 > div:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div[3]/div[2]", "xpath:idRelative"],
+        ["xpath=//div[5]/div/div/div/div[3]/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "122eca87-54e2-449b-8ea5-b9f86c46d4ba",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.gap-8 > div:nth-child(3)",
+      "targets": [
+        ["css=.gap-8 > div:nth-child(3)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div[3]/div[3]", "xpath:idRelative"],
+        ["xpath=//div[6]/div/div/div/div[3]/div[3]", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "50b09896-a92c-428c-82bd-cc6287958ab1",
+    "name": "TEST-2-CATEGORY-EXIST",
+    "commands": [{
+      "id": "6f1acd2b-d4f0-47b6-b61c-776c51f0103e",
+      "comment": "",
+      "command": "open",
+      "target": "https://cs1530.elias.eu.org/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5c1efba8-977a-4718-91ee-427396488d92",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-1']",
+      "targets": [
+        ["id=radix-:r3:-trigger-1", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-1", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-1']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/div/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Appetizers')]", "xpath:innerText"]
+      ],
+      "value": "Appetizers"
+    }, {
+      "id": "8e43c8b6-4322-4193-a127-eb570822950f",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-2']",
+      "targets": [],
+      "value": "Main Course"
+    }, {
+      "id": "c08701d6-cc2f-4a90-bf08-2553c2e8825a",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-3']",
+      "targets": [],
+      "value": "Desserts"
+    }, {
+      "id": "a0940b48-dad7-4986-a7df-43ca757ca082",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-4']",
+      "targets": [
+        ["id=radix-:r3:-trigger-1", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-1", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-1']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div/div/div[2]/div/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Appetizers')]", "xpath:innerText"]
+      ],
+      "value": "Beverages"
+    }, {
+      "id": "8a808bd8-dd63-4cf0-ba8e-b010747db519",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-5']",
+      "targets": [
+        ["id=radix-:r3:-trigger-5", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-5", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-5']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[5]", "xpath:idRelative"],
+        ["xpath=//button[5]", "xpath:position"],
+        ["xpath=//button[contains(.,'Vegetarian')]", "xpath:innerText"]
+      ],
+      "value": "Vegetarian"
+    }, {
+      "id": "0c2987f4-84de-451a-8747-ab81c6119f4f",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-6']",
+      "targets": [
+        ["id=radix-:r3:-trigger-6", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-6", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-6']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[6]", "xpath:idRelative"],
+        ["xpath=//button[6]", "xpath:position"],
+        ["xpath=//button[contains(.,'Seafood')]", "xpath:innerText"]
+      ],
+      "value": "Seafood"
+    }, {
+      "id": "21a44932-6b9d-477a-99cf-d217055bc0ce",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-7']",
+      "targets": [
+        ["id=radix-:r3:-trigger-7", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-7", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-7']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[7]", "xpath:idRelative"],
+        ["xpath=//button[7]", "xpath:position"],
+        ["xpath=//button[contains(.,'Spicy')]", "xpath:innerText"]
+      ],
+      "value": "Spicy"
+    }, {
+      "id": "10861a51-0613-4b2f-a218-6df5fa4de902",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=radix-:r3:-trigger-8",
+      "targets": [
+        ["id=radix-:r3:-trigger-8", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-8", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-8']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[8]", "xpath:idRelative"],
+        ["xpath=//button[8]", "xpath:position"],
+        ["xpath=//button[contains(.,'Chef Specials')]", "xpath:innerText"]
+      ],
+      "value": "Chef Specials"
+    }, {
+      "id": "e9b4e9a9-fbac-4768-9d8c-285b5d171bb2",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-9']",
+      "targets": [
+        ["id=radix-:r3:-trigger-9", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-9", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-9']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[9]", "xpath:idRelative"],
+        ["xpath=//button[9]", "xpath:position"],
+        ["xpath=//button[contains(.,'Gluten-Free')]", "xpath:innerText"]
+      ],
+      "value": "Gluten-Free"
+    }, {
+      "id": "61e951cf-1ae4-40d1-9da8-9d97568c25e1",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//button[@id='radix-:r3:-trigger-10']",
+      "targets": [
+        ["id=radix-:r3:-trigger-10", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-10", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-10']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[10]", "xpath:idRelative"],
+        ["xpath=//button[10]", "xpath:position"],
+        ["xpath=//button[contains(.,'Kids Menu')]", "xpath:innerText"]
+      ],
+      "value": "Kids Menu"
+    }]
+  }, {
+    "id": "280aaf22-c10e-4968-9100-f3d7833d59ff",
+    "name": "TEST-3-CART-EXIST",
+    "commands": [{
+      "id": "c5f0c773-db8d-43ea-8129-86e7cf7f6ef0",
+      "comment": "",
+      "command": "open",
+      "target": "https://cs1530.elias.eu.org/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0ab660c9-e3a5-449c-9067-84face5715c6",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='root']/div/div/div/div/div[2]/a/button",
+      "targets": [
+        ["css=a:nth-child(1) > .justify-center", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div/div[2]/a/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'5')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e4c5651e-f5a7-4c67-94e6-cba8368bb0bb",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//div[@id='root']/div/div/div/div/div[2]/a/button",
+      "targets": [
+        ["css=a:nth-child(1) > .justify-center", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div/div[2]/a/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'5')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5b23354b-231b-499f-8c45-cc0fddd54267",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='root']/div[2]/div",
+      "targets": [
+        ["css=.p-4 > div:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='root']/div[2]/div", "xpath:idRelative"],
+        ["xpath=//div[6]/div[2]/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }]
+  }, {
+    "id": "72b907a1-c7bc-437d-9f2d-26089b6ab4ef",
+    "name": "TEST-4-AUTH-EXIST",
+    "commands": [{
+      "id": "fc7bc9be-8d98-446e-a31a-e1d0705d3822",
+      "comment": "",
+      "command": "open",
+      "target": "https://cs1530.elias.eu.org",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "88a8aebd-1b8a-4823-b45c-f396fa7bac07",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "xpath=//div[@id='root']/div/div/div/div/div[2]/a[2]/button",
+      "targets": [
+        ["css=a:nth-child(2) > .justify-center", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div/div[2]/a[2]/button", "xpath:idRelative"],
+        ["xpath=//a[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Log In')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "f2018471-a3e6-469e-bbbe-ae14803437f4",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//div[@id='root']/div/div/div/div/div[2]/a[2]/button",
+      "targets": [
+        ["css=a:nth-child(2) > .justify-center", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div/div[2]/a[2]/button", "xpath:idRelative"],
+        ["xpath=//a[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Log In')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "91cab7ad-e35d-4a45-9903-1fee4f6f21cf",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='root']/div/div/div",
+      "targets": [
+        ["css=.text-card-foreground", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[6]/div/div/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "ee19b9a5-54a7-4cd1-a911-c709031c3d0d",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "c16b66f8-02ff-4815-a259-5191e5288073",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/form/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "19219030-8159-453f-ba6d-d79c751aed25",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=//div[@id='root']/div/div/div/div[4]/button",
+      "targets": [
+        ["css=.inline-flex:nth-child(2)", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/div[4]/button", "xpath:idRelative"],
+        ["xpath=//div[4]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Register')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e1973b84-c8e3-4be2-a35c-89cdb0a920b2",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='root']/div/div/div",
+      "targets": [
+        ["css=.bg-card", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[5]/div/div/div", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "b6116f20-c9cb-4dd5-8b0b-163ff9309e9b",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "id=name",
+      "targets": [
+        ["id=name", "id"],
+        ["css=#name", "css:finder"],
+        ["xpath=//input[@id='name']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/form/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "ef1384d2-aeb5-48df-9c18-28f86dc26dde",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/form/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "0a6ff62c-e672-4d45-a868-d3df7049f1fc",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/div/div[2]/form/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "30000"
+    }]
+  }, {
+    "id": "a1cdd610-6a6c-4e01-9365-4577d808ecee",
+    "name": "TEST-5-MENU-ITEM-EXIST",
+    "commands": [{
+      "id": "569fa15c-2dfe-40c7-a55d-62037371413c",
+      "comment": "",
+      "command": "open",
+      "target": "https://cs1530.elias.eu.org",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "45dccd44-7f5c-46aa-b5dd-83bb4d9243de",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='1']/div[2]/div/div/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='1']/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Crispy Calamari"
+    }, {
+      "id": "586078bb-a62f-4746-ba20-f7e1eeb43e56",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='1']/div[2]/div/div[2]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='1']/div[2]/div/div[2]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Spinach Artichoke Dip"
+    }, {
+      "id": "05f68bb5-03cc-4b65-8b37-c7c347fa4033",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='1']/div[2]/div/div[3]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='1']/div[2]/div/div[3]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/div[3]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Bruschetta"
+    }, {
+      "id": "0533953e-3521-4c0a-bd2c-7f23a1ec5897",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='1']/div[2]/div/div[4]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='1']/div[2]/div/div[4]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Spicy Chicken Wings"
+    }, {
+      "id": "3613f7e2-b207-41fc-9a20-ab31596f40b3",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='1']/div[2]/div/div[5]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='1']/div[2]/div/div[5]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[5]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Caesar Salad"
+    }, {
+      "id": "c3a8ac47-eaf4-4cea-9195-2d43c9b98831",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='1']/div[2]/div/div[6]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='1']/div[2]/div/div[6]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[6]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "French Onion Soup"
+    }, {
+      "id": "04f5914e-25fc-4780-9744-691cfee1619a",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='2']/div[2]/div/div/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='2']/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Grilled Salmon"
+    }, {
+      "id": "6a510f48-c00a-4ab8-b0dd-438bb60b0c1d",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='2']/div[2]/div/div[2]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='2']/div[2]/div/div[2]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/div/div[2]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Filet Mignon"
+    }, {
+      "id": "d398f662-fa15-4105-a9c2-3e07f9ec11fd",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='2']/div[2]/div/div[3]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='2']/div[2]/div/div[3]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/div/div[3]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Vegetable Stir Fry"
+    }, {
+      "id": "89752991-2d09-4805-955c-f32ae1d1ad7f",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='2']/div[2]/div/div[4]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='2']/div[2]/div/div[4]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/div/div[4]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Margherita Pizza"
+    }, {
+      "id": "62860908-a623-40cb-aa32-7b3b1dd46ce7",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='2']/div[2]/div/div[5]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='2']/div[2]/div/div[5]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/div/div[5]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Shrimp Scampi"
+    }, {
+      "id": "cadb44a3-b94c-46ed-adae-11795c8b65a0",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='2']/div[2]/div/div[6]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='2']/div[2]/div/div[6]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/div/div[6]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Mushroom Risotto"
+    }, {
+      "id": "4f27c4e9-b3e4-45b8-9cc4-97c0c15b7140",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='2']/div[2]/div/div[7]/div/div/div/div",
+      "targets": [
+        ["css=.w-\\[180px\\]:nth-child(7) .font-semibold", "css:finder"],
+        ["xpath=//div[@id='2']/div[2]/div/div[7]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[7]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Lobster Mac and Cheese"
+    }, {
+      "id": "1518eb09-9b0f-4deb-bf61-df2992bd049f",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='3']/div[2]/div/div/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='3']/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[5]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Chocolate Lava Cake"
+    }, {
+      "id": "4e8eb36a-5554-4411-9cf3-c334dbea0cff",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='3']/div[2]/div/div[2]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='3']/div[2]/div/div[2]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[5]/div[2]/div/div[2]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "New York Cheesecake"
+    }, {
+      "id": "e60f3d79-9713-4bce-ad54-359be236dc73",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='3']/div[2]/div/div[3]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='3']/div[2]/div/div[3]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[5]/div[2]/div/div[3]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Tiramisu"
+    }, {
+      "id": "66d22d2c-2f72-4f07-b607-26d07f76ded6",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='3']/div[2]/div/div[4]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='3']/div[2]/div/div[4]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[5]/div[2]/div/div[4]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Fresh Fruit Sorbet"
+    }, {
+      "id": "128f3912-aabd-4d3b-993e-1157636a23b6",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='4']/div[2]/div/div/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='4']/div[2]/div/div/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[6]/div[2]/div/div/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Craft IPA"
+    }, {
+      "id": "18cc25f2-9b5b-4a35-9a3e-8a144c108ef5",
+      "comment": "",
+      "command": "assertText",
+      "target": "xpath=//div[@id='4']/div[2]/div/div[2]/div/div/div/div",
+      "targets": [
+        ["xpath=//div[@id='4']/div[2]/div/div[2]/div/div/div/div", "xpath:idRelative"],
+        ["xpath=//div[6]/div[2]/div/div[2]/div/div/div/div", "xpath:position"]
+      ],
+      "value": "Classic Mojito"
+    }]
+  }, {
+    "id": "eb7833ca-10e6-4626-b8d7-3fb104535dd5",
+    "name": "TEST-6-CATEGORY-REDIRECT",
+    "commands": [{
+      "id": "663229d7-3ebc-4ad6-9133-cb4c7c9818f2",
+      "comment": "",
+      "command": "open",
+      "target": "https://cs1530.elias.eu.org",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2bdab9ca-0cd6-4372-97e4-aba91df6283f",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-1",
+      "targets": [
+        ["id=radix-:r3:-trigger-1", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-1", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-1']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Appetizers')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "02b52410-48bd-4c0e-be2c-2d981e5b7519",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='1']/div[2]/div",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "90cb2c8c-5607-4140-b581-cf83b21ee762",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-2",
+      "targets": [
+        ["id=radix-:r3:-trigger-2", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-2", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-2']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Main Course')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9b180184-f8b1-4497-9a97-0203b0cd6b21",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='2']",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "6c5f57e1-e55a-4310-b795-ec43c49dbc40",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-3",
+      "targets": [
+        ["id=radix-:r3:-trigger-3", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-3", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-3']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[3]", "xpath:idRelative"],
+        ["xpath=//button[3]", "xpath:position"],
+        ["xpath=//button[contains(.,'Desserts')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3d86a019-3766-4121-a88d-27deafe81abc",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='3']",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "fca92b1a-e3db-48ec-b763-7b65807cbd2f",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-4",
+      "targets": [
+        ["id=radix-:r3:-trigger-4", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-4", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-4']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[4]", "xpath:idRelative"],
+        ["xpath=//button[4]", "xpath:position"],
+        ["xpath=//button[contains(.,'Beverages')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1cfbd2e4-44a3-4f08-ba09-be859eb90862",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='4']",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "988711bb-59fd-474c-96a3-6b58bb92e8c5",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-5",
+      "targets": [
+        ["id=radix-:r3:-trigger-5", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-5", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-5']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[5]", "xpath:idRelative"],
+        ["xpath=//button[5]", "xpath:position"],
+        ["xpath=//button[contains(.,'Vegetarian')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "33ccafbf-576b-4254-a9ce-295fa2e4cc40",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "id=5",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "13177249-828c-4143-acf7-3d68be4e04ce",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-6",
+      "targets": [
+        ["id=radix-:r3:-trigger-6", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-6", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-6']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[6]", "xpath:idRelative"],
+        ["xpath=//button[6]", "xpath:position"],
+        ["xpath=//button[contains(.,'Seafood')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "50acfb16-d05c-462b-b4aa-55a7a16b1174",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "id=6",
+      "targets": [],
+      "value": "30000"
+    }, {
+      "id": "fd3f2807-dbd0-448a-b435-0d0974dfcd56",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-7",
+      "targets": [
+        ["id=radix-:r3:-trigger-7", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-7", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-7']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[7]", "xpath:idRelative"],
+        ["xpath=//button[7]", "xpath:position"],
+        ["xpath=//button[contains(.,'Spicy')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "8db62de0-f5db-4b4a-98ee-fb27ea9f7d40",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='7']",
+      "targets": [
+        ["id=7", "id"],
+        ["css=#\\37", "css:finder"],
+        ["xpath=//div[@id='7']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div[9]", "xpath:idRelative"],
+        ["xpath=//div[9]", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "809e1af2-21b2-496c-8f19-099a1d8a8695",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-8",
+      "targets": [
+        ["id=radix-:r3:-trigger-8", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-8", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-8']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[8]", "xpath:idRelative"],
+        ["xpath=//button[8]", "xpath:position"],
+        ["xpath=//button[contains(.,'Chef Specials')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "4cc64783-d862-479b-bc97-9788e6655ecf",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='8']",
+      "targets": [
+        ["id=8", "id"],
+        ["css=#\\38", "css:finder"],
+        ["xpath=//div[@id='8']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div[10]", "xpath:idRelative"],
+        ["xpath=//div[10]", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "d554605b-11b9-4328-8afa-2383464b60c7",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-9",
+      "targets": [
+        ["id=radix-:r3:-trigger-9", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-9", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-9']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[9]", "xpath:idRelative"],
+        ["xpath=//button[9]", "xpath:position"],
+        ["xpath=//button[contains(.,'Gluten-Free')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "50d5bd69-9709-4a34-a9db-0a132abd6f5d",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='9']",
+      "targets": [
+        ["id=9", "id"],
+        ["css=#\\39", "css:finder"],
+        ["xpath=//div[@id='9']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div[11]", "xpath:idRelative"],
+        ["xpath=//div[11]", "xpath:position"]
+      ],
+      "value": "30000"
+    }, {
+      "id": "f162c48f-1ad1-449a-8de3-6bd0f41599f8",
+      "comment": "",
+      "command": "click",
+      "target": "id=radix-:r3:-trigger-10",
+      "targets": [
+        ["id=radix-:r3:-trigger-10", "id"],
+        ["css=#radix-\\3Ar3\\3A-trigger-10", "css:finder"],
+        ["xpath=//button[@id='radix-:r3:-trigger-10']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/div/div/div/button[10]", "xpath:idRelative"],
+        ["xpath=//button[10]", "xpath:position"],
+        ["xpath=//button[contains(.,'Kids Menu')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "737b8998-03a9-4aca-bb2e-ae3efd9bab5c",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "xpath=//div[@id='10']",
+      "targets": [
+        ["id=10", "id"],
+        ["css=#\\31 0", "css:finder"],
+        ["xpath=//div[@id='10']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div[2]/div/div[12]", "xpath:idRelative"],
+        ["xpath=//div[12]", "xpath:position"]
+      ],
+      "value": "30000"
+    }]
+  }],
+  "suites": [{
+    "id": "22dee637-0122-4bee-bc59-a1bbcceca2ff",
+    "name": "JUnit Testing",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["5f982d59-cd59-44f2-8729-635930f27156", "50b09896-a92c-428c-82bd-cc6287958ab1", "280aaf22-c10e-4968-9100-f3d7833d59ff", "72b907a1-c7bc-437d-9f2d-26089b6ab4ef", "a1cdd610-6a6c-4e01-9365-4577d808ecee", "eb7833ca-10e6-4626-b8d7-3fb104535dd5"]
+  }],
+  "urls": ["https://cs1530.elias.eu.org/"],
+  "plugins": []
+}

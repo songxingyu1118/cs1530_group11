@@ -46,8 +46,8 @@ POSTCONDITIONS: "Menu Items" title and "Menu Items" fully exist in the main page
 ```
 
 ```
-IDENTIFIER: TEST-6-CATEGORY-FILTER
-TEST CASE: Check that "Category" link properly points to the "Menu Items" section.
+IDENTIFIER: TEST-6-CATEGORY-REDIRECT
+TEST CASE: Check that "Category" link properly redirects to the "Menu Items" section.
 PRECONDITIONS: None.
 EXECUTION STEPS:
 1. Press the "Burgers" button.
@@ -66,7 +66,7 @@ POSTCONDITIONS:
 ```
 
 ```
-IDENTIFIER: TEST-7-CART
+IDENTIFIER: TEST-8-CART
 TEST CASE: Check that "Cart" link properly points to `http://localhost:5173/cart`.
 PRECONDITIONS: None.
 EXECUTION STEPS:
@@ -76,7 +76,7 @@ POSTCONDITIONS:
 ```
 
 ```
-IDENTIFIER: TEST-8-AUTH
+IDENTIFIER: TEST-9-AUTH
 TEST CASE: Check that "Log In" link properly points to `http://localhost:5173/login`.
 PRECONDITIONS: None.
 EXECUTION STEPS:
@@ -86,7 +86,7 @@ POSTCONDITIONS:
 ```
 
 ```
-IDENTIFIER: TEST-9-AUTH-PROMPT-EXIST
+IDENTIFIER: TEST-10-AUTH-PROMPT-EXIST
 TEST CASE: Check that the login prompt at `http://localhost:5173/login dispays properly.
 PRECONDITIONS: None.
 EXECUTION STEPS: Login prompt at `http://localhost:5173/login dispays properly.
