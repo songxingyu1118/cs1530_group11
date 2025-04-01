@@ -1,4 +1,5 @@
 # cs1530_group11 Dish Rating System
+[Click here for a quick view of our demo server](https://cs1530.elias.eu.org/)
 
 ## **Contributors**
 
@@ -43,8 +44,8 @@ To run this project locally, you’ll need the following:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/yelp-for-one-restaurant.git
-   cd yelp-for-one-restaurant
+   git clone https://github.com/yourusername/cs1530_group11.git
+   cd cs1530_group11
 
 2. **Set up the backend**:
    - Navigate to the backend directory:
