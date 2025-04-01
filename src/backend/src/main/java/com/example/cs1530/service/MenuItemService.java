@@ -171,4 +171,37 @@ public class MenuItemService {
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
+
+    public Category getCategory(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id " + id));
+    }
+
+    public Category saveCategory(String name) {
+        Category category = new Category();
+        category.setName(name);
+        return categoryRepository.save(category);
+    }
+
+    public Category updateCategory(Long id, String name, String description) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id " + id));
+
+        if (name != null) {
+            category.setName(name);
+        }
+        if (description != null) {
+            category.setDescription(description);
+        }
+
+        return categoryRepository.save(category);
+    }
+
+    public void deleteCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("Category not found with id " + id);
+        }
+        categoryRepository.deleteById(id);
+    }
+
 }
