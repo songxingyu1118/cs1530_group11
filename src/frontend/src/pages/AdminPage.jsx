@@ -17,19 +17,27 @@ import { Separator } from '@/components/ui/separator';
 import { Upload } from 'lucide-react';
 
 function AdminPage() {
-
   const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState([]);
 
+  // Menu Item state
   const [editId, setEditId] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [categoryIds, setCategoryIds] = useState([]);
+  const [categoryIds, setCategoryIds] = useState([]); // 存放真正要提交给后端的ID
+  const [categoryNamesInput, setCategoryNamesInput] = useState(''); // 用户输入的类别名称（逗号分隔）
   const [imageFile, setImageFile] = useState(null);
+
+  // Category state
+  const [categoryName, setCategoryName] = useState('');
+  const [categoryDescription, setCategoryDescription] = useState('');
 
   const fileInputRef = useRef(null);
 
-  //Fetch items
+  // -------------------- Data Fetching --------------------
+
+  // Fetch all menu items
   const fetchMenuItems = async () => {
     try {
       const response = await fetch('/api/menu/items');
@@ -43,40 +51,78 @@ function AdminPage() {
     }
   };
 
+  // Fetch all categories
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/menu/categories');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
+
   useEffect(() => {
     fetchMenuItems();
+    fetchCategories();
   }, []);
 
-  //Create / Update item
+  // -------------------- Menu Item Handlers --------------------
+
+  // Handle category name input -> convert to category IDs
+  const handleCategoryNamesChange = (e) => {
+    const inputValue = e.target.value;
+    setCategoryNamesInput(inputValue);
+
+    // 将用户输入的字符串拆分成若干类别名称
+    const names = inputValue
+      .split(',')
+      .map((n) => n.trim())
+      .filter((n) => n !== '');
+
+    // 查找与之匹配的类别ID
+    const matchedIds = [];
+    for (const n of names) {
+      const found = categories.find(
+        (cat) => cat.name.toLowerCase() === n.toLowerCase()
+      );
+      if (found) {
+        matchedIds.push(found.id);
+      }
+    }
+
+    setCategoryIds(matchedIds);
+  };
+
+  // Create or Update menu item
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Prepare form data
+      // 准备要提交的 FormData
       const formData = new FormData();
       formData.append('name', name);
       formData.append('description', description);
       formData.append('price', price);
-
-      // Append category IDs
-      categoryIds.forEach((id) => {
-        if (id) formData.append('categoryIds', id);
-      });
-
-      // Append image if it exists
+      categoryIds.forEach((id) => formData.append('categoryIds', id));
       if (imageFile) {
         formData.append('image', imageFile);
       }
 
       let response;
       if (editId) {
+        // Update existing item
         response = await fetch(`/api/menu/${editId}`, {
           method: 'PUT',
-          body: formData,
+          body: formData
         });
       } else {
+        // Create new item
         response = await fetch('/api/menu/', {
           method: 'POST',
-          body: formData,
+          body: formData
         });
       }
 
@@ -84,7 +130,7 @@ function AdminPage() {
         throw new Error('Network response was not ok');
       }
 
-      // After success, reload items and clear the form
+      // 操作成功后刷新数据并清空表单
       fetchMenuItems();
       clearForm();
     } catch (error) {
@@ -92,52 +138,105 @@ function AdminPage() {
     }
   };
 
-  //Delete item
+  // Edit menu item (fill form with existing data)
+  const handleEdit = (item) => {
+    setEditId(item.id);
+    setName(item.name || '');
+    setDescription(item.description || '');
+    setPrice(item.price || '');
+
+    // 将原有的categoryIds回填
+    if (item.categoryIds) {
+      setCategoryIds(item.categoryIds);
+      // 将categoryIds转换为名称，以逗号拼接后回填到输入框
+      const names = item.categoryIds
+        .map((id) => {
+          const cat = categories.find((c) => c.id === id);
+          return cat ? cat.name : '';
+        })
+        .filter((name) => name !== '')
+        .join(', ');
+      setCategoryNamesInput(names);
+    } else {
+      setCategoryNamesInput('');
+    }
+
+    setImageFile(null);
+  };
+
+  // Delete menu item
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this menu item?')) return;
     try {
-      const response = await fetch(`/api/menu/${id}`, {
-        method: 'DELETE',
-      });
-
+      const response = await fetch(`/api/menu/${id}`, { method: 'DELETE' });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
       fetchMenuItems();
     } catch (error) {
       console.error('Failed to delete menu item:', error);
     }
   };
 
-  //Edit item (fill form)
-  const handleEdit = (item) => {
-    setEditId(item.id);
-    setName(item.name || '');
-    setDescription(item.description || '');
-    setPrice(item.price || '');
-    setCategoryIds(item.categoryIds || []);
-    setImageFile(null);
-  };
-
-  // Clear form
+  // Clear form after create/update
   const clearForm = () => {
     setEditId(null);
     setName('');
     setDescription('');
     setPrice('');
     setCategoryIds([]);
+    setCategoryNamesInput('');
     setImageFile(null);
   };
 
+  // File select
   const handleFileSelect = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       setImageFile(e.target.files[0]);
     }
   };
 
-  // Convert category IDs array to a comma-separated string
-  const categoryIdsStr = categoryIds.join(',');
+  // -------------------- Category --------------------
+
+  // Create new category
+  const handleCategorySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('name', categoryName);
+      formData.append('description', categoryDescription);
+
+      const response = await fetch('/api/menu/categories', {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      fetchCategories();
+      setCategoryName('');
+      setCategoryDescription('');
+    } catch (error) {
+      console.error('Failed to create category:', error);
+    }
+  };
+
+  // Delete category
+  const handleCategoryDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this category?')) return;
+    try {
+      const response = await fetch(`/api/menu/categories/${id}`, {
+        method: 'DELETE'
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      fetchCategories();
+    } catch (error) {
+      console.error('Failed to delete category:', error);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-4xl p-4">
@@ -153,7 +252,6 @@ function AdminPage() {
               : 'Add a new menu item to the system.'}
           </CardDescription>
         </CardHeader>
-
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
@@ -193,28 +291,21 @@ function AdminPage() {
               />
             </div>
 
-            {/* Category IDs */}
+            {/* Category Names (comma-separated) */}
             <div className="grid w-full items-center gap-1">
-              <Label htmlFor="categories">Category IDs (comma-separated)</Label>
+              <Label htmlFor="categoryNames">Category Names (comma-separated)</Label>
               <Input
-                id="categories"
-                value={categoryIdsStr}
-                onChange={(e) => {
-                  const arr = e.target.value
-                    .split(',')
-                    .map((id) => id.trim())
-                    .filter((id) => id !== '');
-                  setCategoryIds(arr);
-                }}
-                placeholder="e.g. 1,3,5"
+                id="categoryNames"
+                value={categoryNamesInput}
+                onChange={handleCategoryNamesChange}
+                placeholder="e.g. Pizza, Drinks"
               />
             </div>
 
-            {/* Image (button-triggered file input) */}
+            {/* Image */}
             <div className="grid w-full items-center gap-1">
               <Label>Image</Label>
               <div className="flex items-center gap-2">
-                {/* Button to trigger hidden file input */}
                 <Button
                   type="button"
                   variant="secondary"
@@ -227,7 +318,6 @@ function AdminPage() {
                   <span className="text-sm text-gray-600">{imageFile.name}</span>
                 )}
               </div>
-              {/* Hidden file input */}
               <input
                 id="image"
                 type="file"
@@ -237,11 +327,9 @@ function AdminPage() {
               />
             </div>
 
-            {/* Submit and Cancel buttons */}
+            {/* Submit & Cancel */}
             <div className="flex gap-2 pt-4">
-              <Button type="submit">
-                {editId ? 'Update' : 'Create'}
-              </Button>
+              <Button type="submit">{editId ? 'Update' : 'Create'}</Button>
               {editId && (
                 <Button variant="outline" onClick={clearForm}>
                   Cancel
@@ -279,12 +367,80 @@ function AdminPage() {
               </CardContent>
               <CardFooter className="flex gap-2">
                 <Button onClick={() => handleEdit(item)}>Edit</Button>
-                <Button variant="destructive" onClick={() => handleDelete(item.id)}>
+                <Button
+                  variant="destructive"
+                  onClick={() => handleDelete(item.id)}
+                >
                   Delete
                 </Button>
               </CardFooter>
             </Card>
           ))}
+        </div>
+      </div>
+
+      <Separator className="my-8" />
+
+      {/* Category Management Section */}
+      <div>
+        <h2 className="text-xl font-bold mb-4">Category Management</h2>
+        {/* Form to create a new category */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Create Category</CardTitle>
+            <CardDescription>Add a new category.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleCategorySubmit} className="space-y-4">
+              <div className="grid w-full items-center gap-1">
+                <Label htmlFor="categoryName">Category Name</Label>
+                <Input
+                  id="categoryName"
+                  required
+                  value={categoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  placeholder="e.g. Pizza"
+                />
+              </div>
+              <div className="grid w-full items-center gap-1">
+                <Label htmlFor="categoryDescription">Category Description</Label>
+                <Textarea
+                  id="categoryDescription"
+                  value={categoryDescription}
+                  onChange={(e) => setCategoryDescription(e.target.value)}
+                  placeholder="e.g. Delicious pizza"
+                />
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button type="submit">Create Category</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* List of all categories */}
+        <div>
+          <h3 className="text-lg font-bold mb-2">All Categories</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {categories.map((category) => (
+              <Card key={category.id}>
+                <CardHeader>
+                  <CardTitle>{category.name}</CardTitle>
+                  {category.description && (
+                    <CardDescription>{category.description}</CardDescription>
+                  )}
+                </CardHeader>
+                <CardFooter className="flex gap-2">
+                  <Button
+                    variant="destructive"
+                    onClick={() => handleCategoryDelete(category.id)}
+                  >
+                    Delete
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>
