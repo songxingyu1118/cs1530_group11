@@ -6,14 +6,14 @@ import { Trash2 } from 'lucide-react';
 import '../css/Cart.scss';
 
 function Cart() {
-  // 从 localStorage 中临时获取购物车数据
+  // get item data from localStorage
   const [cartItems, setCartItems] = useState([]);
-  // tipPercentage 可能为数字（15、20、25）或 'custom'
+  // tipPercentage
   const [tipPercentage, setTipPercentage] = useState(null);
   const [customTip, setCustomTip] = useState('');
   const [tipAmount, setTipAmount] = useState(0);
 
-  // 计算购物车总价（假设每个商品有 price、quantity 字段）
+  // calculate sum（price、quantity）
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   useEffect(() => {
@@ -23,18 +23,18 @@ function Cart() {
     }
   }, []);
 
-  // 当购物车数据更新时也更新 localStorage
+  // update localStorage when update cart
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // 删除购物车内某个商品
+  // remove item
   const removeItem = (itemId) => {
     const updatedCart = cartItems.filter(item => item.id !== itemId);
     setCartItems(updatedCart);
   };
 
-  // Tip 计算：当 tipPercentage 或 customTip、totalPrice 改变时更新 tipAmount
+  // when change tipPercentage or customTip、totalPrice update tipAmount
   useEffect(() => {
     if (tipPercentage !== null && tipPercentage !== 'custom') {
       setTipAmount((totalPrice * tipPercentage) / 100);
@@ -60,7 +60,7 @@ function Cart() {
   return (
     <div className="cart-page">
       <div className="cart-container">
-        {/* 左侧预览面板 */}
+        {/* preview */}
         <div className="cart-preview">
           <h2>Preview</h2>
           <ScrollArea className="preview-scroll">
@@ -84,7 +84,7 @@ function Cart() {
           </ScrollArea>
         </div>
 
-        {/* 右侧 summary 面板 */}
+        {/* summary */}
         <div className="cart-summary">
           <h2>Order Summary</h2>
           <div className="summary-items">
@@ -101,7 +101,7 @@ function Cart() {
             <span>${totalPrice.toFixed(2)}</span>
           </div>
 
-          {/* Tips 计算器 */}
+          {/* Tips calculator */}
           <div className="tip-calculator">
             <h3>Tip Calculator</h3>
             <div className="tip-options">

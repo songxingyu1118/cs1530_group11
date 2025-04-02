@@ -25,8 +25,8 @@ function AdminPage() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [categoryIds, setCategoryIds] = useState([]); // 存放真正要提交给后端的ID
-  const [categoryNamesInput, setCategoryNamesInput] = useState(''); // 用户输入的类别名称（逗号分隔）
+  const [categoryIds, setCategoryIds] = useState([]);
+  const [categoryNamesInput, setCategoryNamesInput] = useState('');
   const [imageFile, setImageFile] = useState(null);
 
   // Category state
@@ -77,13 +77,13 @@ function AdminPage() {
     const inputValue = e.target.value;
     setCategoryNamesInput(inputValue);
 
-    // 将用户输入的字符串拆分成若干类别名称
+    // Split the string entered by the user into category names
     const names = inputValue
       .split(',')
       .map((n) => n.trim())
       .filter((n) => n !== '');
 
-    // 查找与之匹配的类别ID
+    // match categories ID
     const matchedIds = [];
     for (const n of names) {
       const found = categories.find(
@@ -101,7 +101,7 @@ function AdminPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // 准备要提交的 FormData
+      // FormData ready to submit
       const formData = new FormData();
       formData.append('name', name);
       formData.append('description', description);
@@ -130,7 +130,7 @@ function AdminPage() {
         throw new Error('Network response was not ok');
       }
 
-      // 操作成功后刷新数据并清空表单
+      // clean form
       fetchMenuItems();
       clearForm();
     } catch (error) {
@@ -145,10 +145,9 @@ function AdminPage() {
     setDescription(item.description || '');
     setPrice(item.price || '');
 
-    // 将原有的categoryIds回填
     if (item.categoryIds) {
       setCategoryIds(item.categoryIds);
-      // 将categoryIds转换为名称，以逗号拼接后回填到输入框
+      // convert categoryIds to a name, concatenated with commas and backfilled into the input box
       const names = item.categoryIds
         .map((id) => {
           const cat = categories.find((c) => c.id === id);
