@@ -33,3 +33,7 @@ build/
 .vscode/
 
 *.db
+
+# Static resources
+/public
+/uploads
