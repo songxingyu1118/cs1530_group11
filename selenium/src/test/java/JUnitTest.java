@@ -29,7 +29,7 @@ import java.net.URL;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
-public class JUnitTestingTest {
+public class JUnitTest {
   private WebDriver driver;
   private Map<String, Object> vars;
   JavascriptExecutor js;

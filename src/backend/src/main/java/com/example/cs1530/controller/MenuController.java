@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.cs1530.dto.category.CategoryDto;
 import com.example.cs1530.dto.menuitem.MenuItemDto;
+import com.example.cs1530.entity.Category;
 import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.service.FileStorageService;
 import com.example.cs1530.service.MenuItemService;
@@ -199,6 +200,87 @@ public class MenuController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error retrieving categories: " + e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Get a single category by ID", description = "Retrieves a specific menu category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category found", content = @Content(schema = @Schema(implementation = CategoryDto.class))),
+            @ApiResponse(responseCode = "404", description = "Category not found")
+    })
+    @GetMapping("/categories/{id}")
+    public ResponseEntity<CategoryDto> getCategory(
+            @Parameter(description = "ID of the category to retrieve", required = true, example = "1") @PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(menuItemService.getCategory(id).toDto());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + id, e);
+        }
+    }
+
+    @Operation(summary = "Delete a category by ID", description = "Removes a menu category from the database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Category not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity<Void> deleteCategory(
+            @Parameter(description = "ID of the category to delete", required = true, example = "1") @PathVariable Long id) {
+        try {
+            menuItemService.deleteCategory(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + id, e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error deleting category: " + e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Update a category by ID", description = "Updates an existing menu category with new data")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category updated successfully", content = @Content(schema = @Schema(implementation = CategoryDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Category not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<CategoryDto> updateCategory(
+            @Parameter(description = "ID of the category to update", required = true, example = "1") @PathVariable Long id,
+            @Parameter(description = "Name of the category", required = false, example = "Pizza") @RequestParam("name") String name,
+            @Parameter(description = "Description of the category", required = false, example = "Good pizza") @RequestParam(value = "description", required = false) String description) {
+        try {
+            Category updatedCategory = menuItemService.updateCategory(id, name, description);
+            return ResponseEntity.ok(updatedCategory.toDto());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + id, e);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error updating category: " + e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Create a new category", description = "Creates a new menu category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category created successfully", content = @Content(schema = @Schema(implementation = CategoryDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @PostMapping("/categories")
+    public ResponseEntity<CategoryDto> createCategory(
+            @Parameter(description = "Name of the category", required = true, example = "Pizza") @RequestParam("name") String name,
+            @Parameter(description = "Description of the category", required = false, example = "Good pizza") @RequestParam(value = "description", required = false) String description) {
+        try {
+            Category createdCategory = menuItemService.saveCategory(name);
+            return ResponseEntity.ok(createdCategory.toDto());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error creating category: " + e.getMessage(), e);
         }
     }
 
