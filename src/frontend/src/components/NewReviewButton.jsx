@@ -67,8 +67,11 @@ const NewReviewButton = ({ menuItemId }) => {
 
       // Make the POST request to submit the review
       const response = await fetch('/api/reviews/', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
         method: 'POST',
-        body: reviewData
+        body: jsonData
       });
       
       if (!response.ok) {
