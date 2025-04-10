@@ -1,7 +1,9 @@
 package com.example.cs1530.controller;
 
 import com.example.cs1530.dto.Auth.*;
+import com.example.cs1530.dto.Auth.EncryptedLoginRequest;
 import com.example.cs1530.entity.User;
+import com.example.cs1530.security.SecurityManager;
 import com.example.cs1530.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,18 +12,29 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
 @Tag(name = "Authentication", description = "Authentication and User Management API")
 public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private SecurityManager securityManager;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // =============== Authentication Endpoints ===============
 
@@ -59,8 +72,8 @@ public class AuthController {
     }
 
     @Operation(
-            summary = "Login user",
-            description = "Authenticate user and return JSON web token",
+            summary = "Secure login with ECDH encryption",
+            description = "Authenticate using AES-GCM encrypted credentials (requires prior ECDH handshake)",
             tags = {"Authentication"}
     )
     @ApiResponses(value = {
@@ -72,12 +85,40 @@ public class AuthController {
             @ApiResponse(
                     responseCode = "401",
                     description = "Invalid credentials"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid session or encryption error"
             )
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        String token = authService.loginUser(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(new LoginResponse(token));
+    public ResponseEntity<LoginResponse> loginSecure(@RequestBody EncryptedLoginRequest request) {
+        try {
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                logger.warn("Invalid or expired session: {}", request.getSessionId());
+                return ResponseEntity.badRequest().build();
+            }
+
+            // Decrypt the credentials
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedCredentials());
+
+            // Parse the JSON credentials
+            LoginRequest loginRequest = objectMapper.readValue(decryptedData, LoginRequest.class);
+
+            // Authenticate user (using the same service method as regular login)
+            String token = authService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+
+            // Encrypt the token before sending it back
+            String encryptedToken = securityManager.encrypt(request.getSessionId(), token);
+
+            // Return the encrypted token
+            return ResponseEntity.ok(new LoginResponse(encryptedToken));
+
+        } catch (Exception e) {
+            logger.error("Secure login failed: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @Operation(

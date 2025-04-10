@@ -1,38 +1,92 @@
-# cs1530_group11
+# cs1530_group11 Dish Rating System
+[Click here for a quick view of our demo server](https://cs1530.elias.eu.org/)
 
-Group member: Nick Cao; Xingcheng Qian; Xingyu Song; Greyson Barsotti; Elias Benbourenane
+## **Contributors**
 
-# Croud Rating and Commenting for One: a Web Development Project
+- [Elias Benbourenane](https://github.com/eliasbenb) - Back-end Developer
+- [Greyson Barsotti](https://github.com/thegbars) - Front-end Developer
+- [Nick Cao](https://github.com/rucNick) - Backend-Developer
+- [Xingcheng Qian](https://github.com/Xingcheng03) - Front-end Developer
+- [Xingyu Song](https://github.com/songxingyu1118) - Project Management and Testing
 
-## Project Overview
+## **Project Overview**
 
-This project aims to develop a dedicated web platform for a single restaurant, inspired by the concept of Yelp, but with a unique focus on fostering customer interaction and engagement around the restaurant's menu. The platform will allow customers to rate, comment, and share their experiences with individual dishes, rather than focusing on taking orders or reservations. This system will enhance the dining experience by providing valuable feedback for both the restaurant and its patrons.
+This project is a web-based extention prototype that allows users to interact with the menu of a specific organization. Users register and log in, rate and comment on individual menu items, filter dishes based on categories and ratings, view AI generated conclusive reviews, and manage a cart of selected items. 
 
-The website will be built using **JavaScript**, **HTML**, and **CSS**, offering a user-friendly interface for diners to easily navigate and contribute their thoughts on the menu items. By focusing on community-driven feedback, this platform will give the restaurant insights into popular dishes, customer preferences, and areas for improvement.
+## **Features**
 
-## Key Features
+- **User Authentication**: Users can register, log in, and maintain active sessions with email-based authentication.
+- **Menu Item Rating & Commenting**: Users can rate dishes from 1-5 stars and leave comments about their dining experience.
+- **Category Filter**: Users can filter menu items by categories (e.g., appetizers, main courses, desserts).
+- **Sorting**: Users can sort dishes by rating (highest to lowest, lowest to highest) and by the number of reviews.
+- **AI Generated Review**: Users can view AI generated conclusive reviews based on previous user entries.
+- **Cart Management**: Users can add items to a cart, view selected items, and remove them if desired.
 
-1. **Dish Rating System**: Customers can rate each dish on a scale (e.g., 1 to 5 stars) based on their experience.
-2. **Dish Comments**: Users can leave detailed comments about the dishes they've tried, offering constructive feedback or sharing recommendations.
-3. **User Profiles**: Customers will have the option to create profiles to keep track of their ratings and reviews.
-4. **Dish Details Page**: Each dish will have a dedicated page showcasing its description, ingredients, and reviews from other customers.
-5. **Responsive Design**: The platform will be fully responsive, ensuring an optimal viewing experience across a wide range of devices, including smartphones, tablets, and desktops.
-6. **Search Functionality**: Users can search for dishes or browse by category, making it easier to explore the restaurant’s offerings.
+## **Technologies Used**
 
-## Technologies
+- **Frontend**: React.js, HTML, CSS
+- **Backend**: Java, Spring Boot
+- **Database**: SQLite
+- **Authentication**: Email-based authentication
+- **CI/CD**: Selenium for automated testing
 
-- **JavaScript**: To implement interactivity, including the rating system, comment functionality, and user profiles.
-- **HTML5**: For structuring the website’s content.
-- **CSS3**: For styling and ensuring a modern, clean, and user-friendly design.
-- **Local Storage (optional)**: For saving user data (like ratings and comments) locally, allowing users to access their profiles across sessions without requiring a backend database.
+## **Getting Started**
 
-## Target Audience
+### **Prerequisites**
 
-- **Restaurant Diners**: The primary users of the platform will be customers of the restaurant who wish to share their opinions and feedback.
-- **Restaurant Management**: The platform will provide insights into the most popular dishes, customer preferences, and suggestions for improvement.
-  
-## Project Goals
+To run this project locally, you’ll need the following:
 
-- Create an engaging platform that encourages diners to share their thoughts on the restaurant’s menu.
-- Enable the restaurant to gather valuable customer feedback for improving their offerings and customer experience.
-- Build a visually appealing and responsive website that works seamlessly on different devices.
+- **Node.js** (for React frontend)
+- **Java** (for Spring Boot backend)
+- **SQLite** (for the database)
+
+### **Installation Steps**
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/cs1530_group11.git
+   cd cs1530_group11
+
+2. **Set up the backend**:
+   - Navigate to the backend directory:
+     ```bash
+     cd backend
+     ```
+   - Install dependencies:
+     ```bash
+     mvn install
+     ```
+   - Run the backend server:
+     ```bash
+     mvn spring-boot:run
+     ```
+
+3. **Set up the frontend**:
+   - Navigate to the frontend directory:
+     ```bash
+     cd frontend
+     ```
+   - Install dependencies:
+     ```bash
+     npm install
+     ```
+   - Run the frontend:
+     ```bash
+     npm start
+     ```
+
+4. **Access the app**:
+   Open your browser and go to `http://localhost:3000` to access the platform.
+
+## **Usage**
+
+- Register a new user or log in with your existing account.
+- Browse the menu, filter by category, and sort by ratings or reviews.
+- Rate and comment on dishes.
+- Add your favorite dishes to the cart.
+
+## **Future Enhancements**
+
+- Enhance user profile management (view past reviews, ratings, and cart history).
+- Support for multiple restaurant menus in the future.
+- Better response performance

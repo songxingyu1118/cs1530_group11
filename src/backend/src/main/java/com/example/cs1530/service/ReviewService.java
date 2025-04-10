@@ -18,32 +18,36 @@ public class ReviewService {
     @Autowired
     private MenuItemService menuItemService;
 
-    public Review saveReview(String content, int stars, Long menuItemId) {
+    public Review saveReview(String content, Integer stars, Long menuItemId) {
         Review review = new Review();
         review.setContent(content);
         review.setStars(stars);
-        review.setMenuItem(menuItemService.getMenuItemById(menuItemId));
+        review.setMenuItem(menuItemService.getMenuItem(menuItemId));
         return reviewRepository.save(review);
-    }
-
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
     }
 
     public List<Review> getReviewsByMenuItemId(Long menuItemId) {
         return reviewRepository.findByMenuItemId(menuItemId);
     }
 
-    public double getAverageRatingForMenuItem(Long menuItemId) {
+    public List<Review> getReviewsByUserId(Long userId) {
+        return reviewRepository.findByUserId(userId);
+    }
+
+    public Double getAverageRatingForMenuItem(Long menuItemId) {
         List<Review> reviews = getReviewsByMenuItemId(menuItemId);
         if (reviews.isEmpty()) {
             return 0.0;
         }
 
-        double sum = reviews.stream()
+        Double sum = reviews.stream()
                 .mapToDouble(Review::getStars)
                 .sum();
         return sum / reviews.size();
+    }
+
+    public Integer getReviewCountForMenuItem(Long menuItemId) {
+        return getReviewsByMenuItemId(menuItemId).size();
     }
 
     public Review updateReview(Long id, Review updatedReview) {
