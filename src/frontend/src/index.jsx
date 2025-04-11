@@ -119,7 +119,10 @@ const router = createBrowserRouter(
     },
     {
       path: '/admin',
-      element: <AdminPage />,
+      element: <MainWrapper />,
+      children: [
+        { index: true, element: <AdminPage /> },
+      ],
     },
     {
       path: '/cart',
