@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
+import { AdminItemCard } from '@/components/AdminItemCard';
 
 import { Upload } from 'lucide-react';
 
@@ -54,7 +55,7 @@ function AdminPage() {
   // Fetch all categories
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/menu/categories');
+      const response = await fetch('/api/menu/categories?includeMenuItems=true');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -95,6 +96,8 @@ function AdminPage() {
     }
 
     setCategoryIds(matchedIds);
+    fetchCategories();
+    fetchMenuItems();
   };
 
   // Create or Update menu item
@@ -132,6 +135,7 @@ function AdminPage() {
 
       // clean form
       fetchMenuItems();
+      fetchCategories();
       clearForm();
     } catch (error) {
       console.error('Failed to create/update menu item:', error);
@@ -172,6 +176,7 @@ function AdminPage() {
         throw new Error('Network response was not ok');
       }
       fetchMenuItems();
+      fetchCategories();
     } catch (error) {
       console.error('Failed to delete menu item:', error);
     }
@@ -238,7 +243,7 @@ function AdminPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-4">
+    <div>
       <h1 className="text-3xl font-bold mb-6">Admin Page</h1>
 
       {/* Card for the "Create/Update Menu Item" form */}
@@ -342,14 +347,14 @@ function AdminPage() {
       <Separator className="my-8" />
 
       {/* Section to display all existing menu items */}
-      <div>
+      {/* <div>
         <h2 className="text-xl font-bold mb-4">All Menu Items</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {items.map((item) => (
             <Card key={item.id}>
               <CardHeader>
                 <CardTitle>
-                  {item.name} (￥{item.price})
+                  {item.name} (${item.price})
                 </CardTitle>
                 {item.description && (
                   <CardDescription>{item.description}</CardDescription>
@@ -376,6 +381,27 @@ function AdminPage() {
             </Card>
           ))}
         </div>
+      </div> */}
+
+      <div>
+        {categories.map((section) => (
+          <div key={section.id} id={section.id} className="mb-10 scroll-mt-24">
+            <div className="flex items-center mb-4">
+              <h2 className="text-2xl font-bold">{section.name}</h2>
+              <Separator className="ml-4 flex-1" />
+            </div>
+
+            <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pb-4">
+              <div className="flex space-x-4 sm:space-x-6 pb-2 pr-4">
+                {section.menuItems.map((item) => (
+                  <div key={item.id} className="w-[180px] sm:w-[220px] md:w-[250px] lg:w-[280px] flex-none">
+                    <AdminItemCard item={item} editFunction={() => handleEdit(item)} deleteFunction={() => handleDelete(item.id)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <Separator className="my-8" />
