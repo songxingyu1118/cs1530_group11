@@ -2,6 +2,11 @@ package com.example.cs1530.controller;
 
 import java.util.List;
 
+import com.example.cs1530.dto.Auth.EncryptedRequestDto;
+import com.example.cs1530.dto.Auth.EncryptedResponseDto;
+import com.example.cs1530.entity.User;
+import com.example.cs1530.service.AuthService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +25,7 @@ import com.example.cs1530.dto.review.ReviewDto;
 import com.example.cs1530.dto.review.ReviewStatisticDto;
 import com.example.cs1530.entity.Review;
 import com.example.cs1530.service.ReviewService;
+import com.example.cs1530.security.SecurityManager;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,16 +35,27 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
+
+
 
 @RestController
 @RequestMapping("/api/reviews")
 @CrossOrigin(origins = "*")
 @Tag(name = "Review Management", description = "APIs for managing menu item reviews")
 public class ReviewController {
+
+
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private SecurityManager securityManager;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private AuthService authService;
 
     @Operation(summary = "Create a new review", description = "Creates a new review for a menu item")
     @ApiResponses(value = {
@@ -49,18 +66,57 @@ public class ReviewController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PostMapping("/")
-    public ResponseEntity<ReviewDto> createReview(@Valid @RequestBody CreateReviewRequest request) {
+    public ResponseEntity<EncryptedResponseDto> createReview(@RequestBody EncryptedRequestDto request) {
         try {
-            // TODO: implement user auth and set the user ID in the request
-            Review savedReview = reviewService.saveReview(request.getContent(), request.getStars(),
-                    request.getMenuItemId());
-            return ResponseEntity.ok(savedReview.toDto());
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            // Decrypt the request data
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedData());
+            // Parse the JSON request
+            CreateReviewRequest createRequest = objectMapper.readValue(decryptedData, CreateReviewRequest.class);
+            // Get token from the request
+            String token = createRequest.getToken();
+            // Require authentication for reviews
+            if (token == null || token.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new EncryptedResponseDto(
+                                securityManager.encrypt(request.getSessionId(),
+                                        "{\"error\":\"Authentication required to submit reviews\"}")
+                        ));
+            }
+            // Authenticate the user
+            Long userId;
+            try {
+                User currentUser = authService.getCurrentUser(token);
+                userId = currentUser.getId();
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new EncryptedResponseDto(
+                                securityManager.encrypt(request.getSessionId(),
+                                        "{\"error\":\"Invalid authentication token\"}")
+                        ));
+            }
+            // Process the review creation with user ID
+            Review savedReview = reviewService.saveReview(
+                    createRequest.getContent(),
+                    createRequest.getStars(),
+                    createRequest.getMenuItemId(),
+                    userId
+            );
+
+            // Convert the review to a DTO and encrypt it for the response
+            String reviewJson = objectMapper.writeValueAsString(savedReview.toDto());
+            String encryptedResponse = securityManager.encrypt(request.getSessionId(), reviewJson);
+
+            // Create and return the response
+            EncryptedResponseDto responseDto = new EncryptedResponseDto(encryptedResponse);
+            return ResponseEntity.ok(responseDto);
         } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity not found: " + e.getMessage(), e);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        } catch (ConstraintViolationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Constraint violation: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error creating review: " + e.getMessage(), e);
