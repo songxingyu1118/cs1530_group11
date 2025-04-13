@@ -9,84 +9,95 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { StarRating } from "@/components/StarRating";
 import { NewReviewButton } from '@/components/NewReviewButton';
-
-
-
-
-
+import eventBus from '@/utils/eventBus';
 
 const ReviewList = ({ menuItemId }) => {
-
   const [reviewsLoading, setReviewsLoading] = React.useState(true);
   const [reviews, setReviews] = React.useState([]);
   const [reviewsError, setReviewsError] = React.useState(null);
 
   const fetchReviews = async () => {
-      try {
-        const response = await fetch(`/api/reviews/menu-item/${menuItemId}`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setReviews(data);
-        setReviewsLoading(false);
-      } catch (error) {
-        setReviewsError(error.message);
-        setReviewsLoading(false);
+    try {
+      setReviewsLoading(true); // Show loading state when refreshing
+      const response = await fetch(`/api/reviews/menu-item/${menuItemId}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
-
-    React.useEffect(() => {
-        fetchReviews();
-      }, [menuItemId]);
-
-    if (reviewsLoading) {
-      return (
-        <div className='col-span-1'>
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle className="text-2xl font-semibold">Reviews</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ScrollArea className="h-[600px] pr-4">
-                <div className="space-y-4">
-                  {[...Array(8)].map((_, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Skeleton className="w-24 h-4" />
-                        <Skeleton className="w-16 h-4" />
-                      </div>
-                      <Skeleton className="w-full h-6" />
-                      <Separator className="my-2" />
-                    </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
-        </div>
-      );
-
+      const data = await response.json();
+      setReviews(data);
+      setReviewsLoading(false);
+    } catch (error) {
+      setReviewsError(error.message);
+      setReviewsLoading(false);
     }
+  };
 
-    if (reviewsError) return (
-      <div className="flex items-center justify-center min-h-screen p-6">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Review Fetch Error</AlertTitle>
-          <AlertDescription>
-            Could not fetch reviews.
-          </AlertDescription>
-        </Alert>
+  // Initial fetch
+  React.useEffect(() => {
+    fetchReviews();
+  }, [menuItemId]);
+
+  // Listen for review added events
+  React.useEffect(() => {
+    // Subscribe to the reviewAdded event
+    const unsubscribe = eventBus.subscribe('reviewAdded', (data) => {
+      // Only refresh if the event is for this menu item
+      if (data.menuItemId === menuItemId) {
+        fetchReviews();
+      }
+    });
+
+    // Cleanup subscription when component unmounts
+    return () => unsubscribe();
+  }, [menuItemId]);
+
+  if (reviewsLoading) {
+    return (
+      <div className='col-span-1'>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold">Reviews</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[600px] pr-4">
+              <div className="space-y-4">
+                {[...Array(8)].map((_, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="w-24 h-4" />
+                      <Skeleton className="w-16 h-4" />
+                    </div>
+                    <Skeleton className="w-full h-6" />
+                    <Separator className="my-2" />
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
       </div>
     );
 
-  return(
+  }
+
+  if (reviewsError) return (
+    <div className="flex items-center justify-center min-h-screen p-6">
+      <Alert variant="destructive" className="max-w-md">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Review Fetch Error</AlertTitle>
+        <AlertDescription>
+          Could not fetch reviews.
+        </AlertDescription>
+      </Alert>
+    </div>
+  );
+
+  return (
     <div className="col-span-1">
       <Card className="h-full">
         <CardHeader>
           <CardTitle >
-            <NewReviewButton menuItemId={menuItemId} />  
+            <NewReviewButton menuItemId={menuItemId} />
           </CardTitle>
         </CardHeader>
         <CardContent>
