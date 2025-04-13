@@ -6,7 +6,7 @@ import { Navigate, Outlet, RouterProvider, createBrowserRouter } from 'react-rou
 import HomePage from '@/pages/HomePage.jsx';
 import LoginPage from '@/pages/LoginPage.jsx';
 import RegisterPage from '@/pages/RegisterPage.jsx';
-import Cart from '@/pages/Cart.jsx';
+// import Cart from '@/pages/Cart.jsx';
 import FullMenuItem from '@/pages/FullMenuItem.jsx';
 import FourOFour from '@/pages/FourOFour.jsx';
 import AdminPage from '@/pages/AdminPage.jsx';
@@ -91,7 +91,7 @@ const router = createBrowserRouter(
       element: <MainWrapper />,
       children: [
         { index: true, element: <HomePage /> },
-        { path: 'cart', element: <Cart /> },
+        // { path: 'cart', element: <Cart /> },
       ],
     },
     {
@@ -124,10 +124,10 @@ const router = createBrowserRouter(
         { index: true, element: <AdminPage /> },
       ],
     },
-    {
-      path: '/cart',
-      element: <Cart />,
-    },
+    // {
+    //   path: '/cart',
+    //   element: <Cart />,
+    // },
   ],
   {
     basename: BASE_URL,

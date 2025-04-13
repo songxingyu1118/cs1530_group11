@@ -41,12 +41,12 @@ function NavBar() {
                 </span>
               )}
 
-              <Link to="/cart">
+              {/* <Link to="/cart">
                 <Button variant="outline" size="sm" className="flex items-center gap-2 bg-white hover:bg-gray-100">
                   <Badge variant="secondary" className="mr-1">5</Badge>
                   <ShoppingCart size={16} />
                 </Button>
-              </Link>
+              </Link> */}
 
               {isLoggedIn ? (
                 <Button
