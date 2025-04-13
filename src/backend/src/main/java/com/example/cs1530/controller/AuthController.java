@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "*")
@@ -58,6 +60,7 @@ public class AuthController {
                     description = "User already exists with this email"
             )
     })
+
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(
             @Parameter(
@@ -92,32 +95,35 @@ public class AuthController {
             )
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginSecure(@RequestBody EncryptedLoginRequest request) {
+    public ResponseEntity<?> loginSecure(@RequestBody EncryptedLoginRequest request) {
         try {
             // Verify session is valid
             if (!securityManager.isSessionValid(request.getSessionId())) {
                 logger.warn("Invalid or expired session: {}", request.getSessionId());
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.status(400)
+                        .body(Map.of("error", "invalid_session", "message", "Session expired or invalid"));
             }
-
             // Decrypt the credentials
             String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedCredentials());
-
             // Parse the JSON credentials
             LoginRequest loginRequest = objectMapper.readValue(decryptedData, LoginRequest.class);
-
-            // Authenticate user (using the same service method as regular login)
-            String token = authService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
-
-            // Encrypt the token before sending it back
-            String encryptedToken = securityManager.encrypt(request.getSessionId(), token);
-
-            // Return the encrypted token
-            return ResponseEntity.ok(new LoginResponse(encryptedToken));
-
+            try {
+                // Authenticate user
+                String token = authService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+                // Encrypt the token
+                String encryptedToken = securityManager.encrypt(request.getSessionId(), token);
+                // Return the encrypted token
+                return ResponseEntity.ok(new LoginResponse(encryptedToken));
+            } catch (RuntimeException e) {
+                //invalid email/password
+                logger.warn("Authentication failed: {}", e.getMessage());
+                return ResponseEntity.status(401)
+                        .body(Map.of("error", "invalid_credentials", "message", "Invalid email or password"));
+            }
         } catch (Exception e) {
             logger.error("Secure login failed: {}", e.getMessage(), e);
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(400)
+                    .body(Map.of("error", "encryption_error", "message", "Error processing encrypted request"));
         }
     }
 
@@ -141,34 +147,137 @@ public class AuthController {
         authService.logoutUser();
         return ResponseEntity.ok().build();
     }
-
     // =============== User Management Endpoints ===============
-
     @GetMapping("/users/me")
-    public ResponseEntity<UserDto> getCurrentUser(@RequestParam(required = false) String token) {
-        User user = authService.getCurrentUser(token);
-        return ResponseEntity.ok(user.toDto());
+    public ResponseEntity<?> getCurrentUser(
+            @RequestParam(required = false) String token,
+            @RequestBody(required = false) EncryptedRequestDto encryptedRequest) {
+        try {
+            // Check if this is an encrypted request
+            if (encryptedRequest != null && encryptedRequest.getSessionId() != null) {
+                // Verify session is valid
+                if (!securityManager.isSessionValid(encryptedRequest.getSessionId())) {
+                    logger.warn("Invalid or expired session: {}", encryptedRequest.getSessionId());
+                    return ResponseEntity.badRequest().build();
+                }
+                // Decrypt the token if provided in encryptedData
+                String decryptedToken = null;
+                if (encryptedRequest.getEncryptedData() != null) {
+                    decryptedToken = securityManager.decrypt(
+                            encryptedRequest.getSessionId(),
+                            encryptedRequest.getEncryptedData());
+                }
+                // Get the current user
+                User user = authService.getCurrentUser(decryptedToken);
+                // Convert to DTO and then to JSON
+                String userData = objectMapper.writeValueAsString(user.toDto());
+                // Encrypt the user data
+                String encryptedData = securityManager.encrypt(
+                        encryptedRequest.getSessionId(),
+                        userData);
+                // Return encrypted response
+                return ResponseEntity.ok(new EncryptedResponseDto(encryptedData));
+            } else {
+                // Handle as regular non-encrypted request
+                User user = authService.getCurrentUser(token);
+                return ResponseEntity.ok(user.toDto());
+            }
+        } catch (Exception e) {
+            logger.error("Get current user failed: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/users/me")
-    public ResponseEntity<UserDto> updateCurrentUser(
-            @RequestBody UpdateUserRequest request,
-            @RequestParam(required = false) String token
-    ) {
-        User updatedUser = authService.updateUser(
-                request.getName(),
-                request.getEmail(),
-                token
-        );
-        return ResponseEntity.ok(updatedUser.toDto());
+    public ResponseEntity<?> updateCurrentUser(
+            @RequestBody(required = false) UpdateUserRequest plainRequest,
+            @RequestBody(required = false) EncryptedRequestDto encryptedRequest,
+            @RequestParam(required = false) String token) {
+        try {
+            // Check if this is an encrypted request
+            if (encryptedRequest != null && encryptedRequest.getSessionId() != null) {
+                // Verify session is valid
+                if (!securityManager.isSessionValid(encryptedRequest.getSessionId())) {
+                    logger.warn("Invalid or expired session: {}", encryptedRequest.getSessionId());
+                    return ResponseEntity.badRequest().build();
+                }
+                // Decrypt the request data
+                String decryptedData = securityManager.decrypt(
+                        encryptedRequest.getSessionId(),
+                        encryptedRequest.getEncryptedData());
+                // Parse as a combined object containing user data and token
+                UpdateUserEncryptedData updateData = objectMapper.readValue(
+                        decryptedData,
+                        UpdateUserEncryptedData.class);
+                // Update the user
+                User updatedUser = authService.updateUser(
+                        updateData.getName(),
+                        updateData.getEmail(),
+                        updateData.getToken()
+                );
+                // Convert to DTO and then to JSON
+                String userData = objectMapper.writeValueAsString(updatedUser.toDto());
+                // Encrypt the user data
+                String encryptedData = securityManager.encrypt(
+                        encryptedRequest.getSessionId(),
+                        userData);
+                // Return encrypted response
+                return ResponseEntity.ok(new EncryptedResponseDto(encryptedData));
+            } else {
+                // Handle as regular non-encrypted request
+                User updatedUser = authService.updateUser(
+                        plainRequest.getName(),
+                        plainRequest.getEmail(),
+                        token
+                );
+                return ResponseEntity.ok(updatedUser.toDto());
+            }
+        } catch (Exception e) {
+            logger.error("Update current user failed: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDto> getUserById(
+    public ResponseEntity<?> getUserById(
             @PathVariable Long id,
-            @RequestParam(required = false) String token
-    ) {
-        User user = authService.getUserById(id, token);
-        return ResponseEntity.ok(user.toDto());
+            @RequestParam(required = false) String token,
+            @RequestBody(required = false) EncryptedRequestDto encryptedRequest) {
+        try {
+            // Check if this is an encrypted request
+            if (encryptedRequest != null && encryptedRequest.getSessionId() != null) {
+                // Verify session is valid
+                if (!securityManager.isSessionValid(encryptedRequest.getSessionId())) {
+                    logger.warn("Invalid or expired session: {}", encryptedRequest.getSessionId());
+                    return ResponseEntity.badRequest().build();
+                }
+                // Decrypt the token if provided in encryptedData
+                String decryptedToken = null;
+                if (encryptedRequest.getEncryptedData() != null) {
+                    decryptedToken = securityManager.decrypt(
+                            encryptedRequest.getSessionId(),
+                            encryptedRequest.getEncryptedData());
+                }
+                // Get the user by ID
+                User user = authService.getUserById(id, decryptedToken);
+
+                // Convert to DTO and then to JSON
+                String userData = objectMapper.writeValueAsString(user.toDto());
+
+                // Encrypt the user data
+                String encryptedData = securityManager.encrypt(
+                        encryptedRequest.getSessionId(),
+                        userData);
+                // Return encrypted response
+                return ResponseEntity.ok(new EncryptedResponseDto(encryptedData));
+            } else {
+                // Handle as regular non-encrypted request
+                User user = authService.getUserById(id, token);
+                return ResponseEntity.ok(user.toDto());
+            }
+        } catch (Exception e) {
+            logger.error("Get user by ID failed: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
