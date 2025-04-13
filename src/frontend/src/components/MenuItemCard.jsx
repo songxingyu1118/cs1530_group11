@@ -1,13 +1,35 @@
+import React, { useState } from "react";
 import { FileX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { StarRating } from "@/components/StarRating";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const MenuItemCard = ({ item }) => {
+const MenuItemCard = ({ item, onAddToCart }) => {
   const [imageError, setImageError] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
+  const handleAddToCartClick = () => {
+    setIsAdding(true);
+  };
+
+  const handleDecrement = () => {
+    setQuantity(prev => Math.max(1, prev - 1));
+  };
+
+  const handleIncrement = () => {
+    setQuantity(prev => prev + 1);
+  };
+
+  const handleConfirm = () => {
+    if (onAddToCart) {
+      onAddToCart(item, quantity);
+    }
+    setIsAdding(false);
+    setQuantity(1);
+  };
 
   return (
     <Card className="transition-all hover:shadow-md h-112 pt-0">
@@ -42,7 +64,22 @@ const MenuItemCard = ({ item }) => {
         <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
       </CardContent>
       <CardFooter className="pt-0 mt-auto">
-        <Button className="w-full" onClick={() => null}>Add to Cart</Button>
+        {isAdding ? (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-center gap-2">
+              <Button onClick={handleDecrement}>-</Button>
+              <span>{quantity}</span>
+              <Button onClick={handleIncrement}>+</Button>
+            </div>
+            <Button onClick={handleConfirm} className="w-full">
+              Confirm quantity
+            </Button>
+          </div>
+        ) : (
+          <Button className="w-full" onClick={handleAddToCartClick}>
+            Add to Cart
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
