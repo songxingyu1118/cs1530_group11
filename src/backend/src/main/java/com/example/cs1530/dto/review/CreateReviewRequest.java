@@ -12,6 +12,9 @@ public class CreateReviewRequest {
     @Schema(description = "ID of the menu item that the review is for", required = true)
     private Long menuItemId;
 
+    @Schema(description = "Authentication token for the user (optional)")
+    private String token;
+
     public Integer getStars() {
         return stars;
     }
@@ -22,5 +25,13 @@ public class CreateReviewRequest {
 
     public Long getMenuItemId() {
         return menuItemId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
