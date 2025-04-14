@@ -89,7 +89,7 @@ function NavBar() {
                 </Link>
               )}
 
-              {/* Cart button */}
+              {/* Cart button
               <Button
                 variant="outline"
                 size="sm"
@@ -98,7 +98,7 @@ function NavBar() {
               >
                 <ShoppingCart size={16} />
                 <span className="hidden sm:inline">Cart</span>
-              </Button>
+              </Button> */}
 
               {isLoggedIn ? (
                 <Button
