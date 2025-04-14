@@ -1,7 +1,14 @@
 package com.example.cs1530.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.example.cs1530.dto.Auth.EncryptedRequestDto;
+import com.example.cs1530.dto.Auth.EncryptedResponseDto;
+import com.example.cs1530.service.AuthService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -9,16 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,6 +27,8 @@ import com.example.cs1530.entity.MenuItem;
 import com.example.cs1530.service.FileStorageService;
 import com.example.cs1530.service.MenuItemService;
 import com.example.cs1530.service.OpenAIService;
+import com.example.cs1530.security.SecurityManager;
+import com.example.cs1530.entity.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,30 +53,68 @@ public class MenuController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @Autowired
+    private SecurityManager securityManager;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private AuthService authService;
+
+    // Helper method to validate admin authentication
+    private void validateAdminAuth(String token) {
+        if (token == null || token.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
+        }
+        User currentUser = authService.getCurrentUser(token);
+        if (!currentUser.isAdmin()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin privileges required");
+        }
+    }
+
     @Operation(summary = "Create a new menu item", description = "Creates a new menu item with the provided data and image")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Menu item created successfully", content = @Content(schema = @Schema(implementation = MenuItemDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<MenuItemDto> createMenuItem(
-            @Parameter(description = "Name of the menu item", required = true, example = "Margherita Pizza") @RequestParam("name") String name,
-            @Parameter(description = "Detailed description of the menu item (e.g. ingredients)", example = "New York style pizza with fresh mozzarella, tomatoes, and basil") @RequestParam(value = "description", required = false) String description,
-            @Parameter(description = "URL to the menu item's image") @RequestPart(value = "image", required = false) MultipartFile imageFile,
-            @Parameter(description = "Price of the menu item", required = true, example = "10.99") @RequestParam("price") Double price,
-            @Parameter(description = "List of category IDs that this menu item belongs to", example = "[]") @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds) {
-
+    @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EncryptedResponseDto> createMenuItem(@RequestBody EncryptedRequestDto request) {
         try {
-            String imagePath = null;
-            if (imageFile != null) {
-                imagePath = fileStorageService.storeFile(imageFile);
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
             }
-
+            // Decrypt the request data
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedData());
+            // Parse the JSON request
+            JsonNode requestNode = objectMapper.readTree(decryptedData);
+            // Extract token and validate admin status
+            String token = requestNode.get("token").asText();
+            validateAdminAuth(token);
+            // Extract menu item data
+            String name = requestNode.get("name").asText();
+            String description = requestNode.has("description") ? requestNode.get("description").asText() : null;
+            String imagePath = requestNode.has("imagePath") ? requestNode.get("imagePath").asText() : null;
+            Double price = requestNode.get("price").asDouble();
+            // Extract category IDs
+            List<Long> categoryIds = new ArrayList<>();
+            if (requestNode.has("categoryIds") && requestNode.get("categoryIds").isArray()) {
+                JsonNode categoryIdsNode = requestNode.get("categoryIds");
+                for (JsonNode categoryId : categoryIdsNode) {
+                    categoryIds.add(categoryId.asLong());
+                }
+            }
+            // Create the menu item
             MenuItem savedMenuItem = menuItemService.saveMenuItem(name, description, imagePath, price, categoryIds);
-            return ResponseEntity.ok(savedMenuItem.toDto());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            // Convert to DTO and encrypt for response
+            String menuItemJson = objectMapper.writeValueAsString(savedMenuItem.toDto());
+            String encryptedResponse = securityManager.encrypt(request.getSessionId(), menuItemJson);
+            return ResponseEntity.ok(new EncryptedResponseDto(encryptedResponse));
+        } catch (ResponseStatusException e) {
+            // Pass through status exceptions
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error creating menu item: " + e.getMessage(), e);
@@ -106,27 +144,43 @@ public class MenuController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<MenuItemDto> updateMenuItem(
-            @Parameter(description = "UID of the menu item to update", required = true, example = "1") @PathVariable Long id,
-            @Parameter(description = "Name of the menu item", required = true, example = "Margherita Pizza") @RequestParam("name") String name,
-            @Parameter(description = "Detailed description of the menu item (e.g. ingredients)", example = "New York style pizza with fresh mozzarella, tomatoes, and basil") @RequestParam(value = "description", required = false) String description,
-            @Parameter(description = "URL to the menu item's image") @RequestPart(value = "image", required = false) MultipartFile imageFile,
-            @Parameter(description = "Price of the menu item", required = true, example = "10.99") @RequestParam("price") Double price,
-            @Parameter(description = "List of category IDs that this menu item belongs to", example = "[]") @RequestParam(value = "categoryIds", required = false) List<Long> categoryIds) {
-
+    public ResponseEntity<EncryptedResponseDto> updateMenuItem(
+            @PathVariable Long id,
+            @RequestBody EncryptedRequestDto request) {
         try {
-            String imagePath = null;
-            if (imageFile != null) {
-                imagePath = fileStorageService.storeFile(imageFile);
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
             }
-
-            MenuItem updatedMenuItem = menuItemService.updateMenuItem(id, name, description, imagePath, price,
-                    categoryIds);
-            return ResponseEntity.ok(updatedMenuItem.toDto());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu item not found with id: " + id, e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            // Decrypt the request data
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedData());
+            // Parse the JSON request
+            JsonNode requestNode = objectMapper.readTree(decryptedData);
+            // Extract token and validate admin status
+            String token = requestNode.get("token").asText();
+            validateAdminAuth(token);
+            // Extract menu item data
+            String name = requestNode.get("name").asText();
+            String description = requestNode.has("description") ? requestNode.get("description").asText() : null;
+            String imagePath = requestNode.has("imagePath") ? requestNode.get("imagePath").asText() : null;
+            Double price = requestNode.get("price").asDouble();
+            // Extract category IDs
+            List<Long> categoryIds = new ArrayList<>();
+            if (requestNode.has("categoryIds") && requestNode.get("categoryIds").isArray()) {
+                JsonNode categoryIdsNode = requestNode.get("categoryIds");
+                for (JsonNode categoryId : categoryIdsNode) {
+                    categoryIds.add(categoryId.asLong());
+                }
+            }
+            // Update the menu item
+            MenuItem updatedMenuItem = menuItemService.updateMenuItem(id, name, description, imagePath, price, categoryIds);
+            // Convert to DTO and encrypt for response
+            String menuItemJson = objectMapper.writeValueAsString(updatedMenuItem.toDto());
+            String encryptedResponse = securityManager.encrypt(request.getSessionId(), menuItemJson);
+            return ResponseEntity.ok(new EncryptedResponseDto(encryptedResponse));
+        } catch (ResponseStatusException e) {
+            // Pass through status exceptions
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error updating menu item: " + e.getMessage(), e);
@@ -140,13 +194,30 @@ public class MenuController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMenuItem(
-            @Parameter(description = "ID of the menu item to delete", required = true, example = "1") @PathVariable Long id) {
+    public ResponseEntity<EncryptedResponseDto> deleteMenuItem(
+            @PathVariable Long id,
+            @RequestBody EncryptedRequestDto request) {
         try {
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            // Decrypt the request data
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedData());
+            // Parse the JSON request
+            JsonNode requestNode = objectMapper.readTree(decryptedData);
+            // Extract token and validate admin status
+            String token = requestNode.get("token").asText();
+            validateAdminAuth(token);
+            // Delete the menu item
             menuItemService.deleteMenuItem(id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Menu item not found with id: " + id, e);
+            // Send success response
+            String successMessage = objectMapper.writeValueAsString(Map.of("success", true));
+            String encryptedResponse = securityManager.encrypt(request.getSessionId(), successMessage);
+            return ResponseEntity.ok(new EncryptedResponseDto(encryptedResponse));
+        } catch (ResponseStatusException e) {
+            // Pass through status exceptions
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error deleting menu item: " + e.getMessage(), e);
@@ -225,13 +296,30 @@ public class MenuController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @DeleteMapping("/categories/{id}")
-    public ResponseEntity<Void> deleteCategory(
-            @Parameter(description = "ID of the category to delete", required = true, example = "1") @PathVariable Long id) {
+    public ResponseEntity<EncryptedResponseDto> deleteCategory(
+            @PathVariable Long id,
+            @RequestBody EncryptedRequestDto request) {
         try {
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            // Decrypt the request data
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedData());
+            // Parse the JSON request
+            JsonNode requestNode = objectMapper.readTree(decryptedData);
+            // Extract token and validate admin status
+            String token = requestNode.get("token").asText();
+            validateAdminAuth(token);
+            // Delete the category
             menuItemService.deleteCategory(id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + id, e);
+            // Send success response
+            String successMessage = objectMapper.writeValueAsString(Map.of("success", true));
+            String encryptedResponse = securityManager.encrypt(request.getSessionId(), successMessage);
+            return ResponseEntity.ok(new EncryptedResponseDto(encryptedResponse));
+        } catch (ResponseStatusException e) {
+            // Pass through status exceptions
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error deleting category: " + e.getMessage(), e);
@@ -246,17 +334,33 @@ public class MenuController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PutMapping("/categories/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(
-            @Parameter(description = "ID of the category to update", required = true, example = "1") @PathVariable Long id,
-            @Parameter(description = "Name of the category", required = false, example = "Pizza") @RequestParam("name") String name,
-            @Parameter(description = "Description of the category", required = false, example = "Good pizza") @RequestParam(value = "description", required = false) String description) {
+    public ResponseEntity<EncryptedResponseDto> updateCategory(
+            @PathVariable Long id,
+            @RequestBody EncryptedRequestDto request) {
         try {
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            // Decrypt the request data
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedData());
+            // Parse the JSON request
+            JsonNode requestNode = objectMapper.readTree(decryptedData);
+            // Extract token and validate admin status
+            String token = requestNode.get("token").asText();
+            validateAdminAuth(token);
+            // Extract category data
+            String name = requestNode.get("name").asText();
+            String description = requestNode.has("description") ? requestNode.get("description").asText() : null;
+            // Update the category
             Category updatedCategory = menuItemService.updateCategory(id, name, description);
-            return ResponseEntity.ok(updatedCategory.toDto());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + id, e);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            // Convert to DTO and encrypt for response
+            String categoryJson = objectMapper.writeValueAsString(updatedCategory.toDto());
+            String encryptedResponse = securityManager.encrypt(request.getSessionId(), categoryJson);
+            return ResponseEntity.ok(new EncryptedResponseDto(encryptedResponse));
+        } catch (ResponseStatusException e) {
+            // Pass through status exceptions
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error updating category: " + e.getMessage(), e);
@@ -270,14 +374,31 @@ public class MenuController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PostMapping("/categories")
-    public ResponseEntity<CategoryDto> createCategory(
-            @Parameter(description = "Name of the category", required = true, example = "Pizza") @RequestParam("name") String name,
-            @Parameter(description = "Description of the category", required = false, example = "Good pizza") @RequestParam(value = "description", required = false) String description) {
+    public ResponseEntity<EncryptedResponseDto> createCategory(@RequestBody EncryptedRequestDto request) {
         try {
-            Category createdCategory = menuItemService.saveCategory(name);
-            return ResponseEntity.ok(createdCategory.toDto());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+            // Verify session is valid
+            if (!securityManager.isSessionValid(request.getSessionId())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            // Decrypt the request data
+            String decryptedData = securityManager.decrypt(request.getSessionId(), request.getEncryptedData());
+            // Parse the JSON request
+            JsonNode requestNode = objectMapper.readTree(decryptedData);
+            // Extract token and validate admin status
+            String token = requestNode.get("token").asText();
+            validateAdminAuth(token);
+            // Extract category data
+            String name = requestNode.get("name").asText();
+            String description = requestNode.has("description") ? requestNode.get("description").asText() : null;
+            // Create the category
+            Category createdCategory = menuItemService.saveCategory(name, description);
+            // Convert to DTO and encrypt for response
+            String categoryJson = objectMapper.writeValueAsString(createdCategory.toDto());
+            String encryptedResponse = securityManager.encrypt(request.getSessionId(), categoryJson);
+            return ResponseEntity.ok(new EncryptedResponseDto(encryptedResponse));
+        } catch (ResponseStatusException e) {
+            // Pass through status exceptions
+            throw e;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error creating category: " + e.getMessage(), e);
