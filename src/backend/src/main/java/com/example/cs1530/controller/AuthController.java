@@ -147,6 +147,62 @@ public class AuthController {
         authService.logoutUser();
         return ResponseEntity.ok().build();
     }
+
+
+    @Operation(
+            summary = "Check if user is admin",
+            description = "Verifies if the current user has admin privileges",
+            tags = {"Authentication"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Admin status checked successfully"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Not authenticated"
+            )
+    })
+    @GetMapping("/users/isAdmin")
+    public ResponseEntity<?> checkIfAdmin(
+            @RequestParam(required = false) String token,
+            @RequestBody(required = false) EncryptedRequestDto encryptedRequest) {
+        try {
+            // Check if this is an encrypted request
+            if (encryptedRequest != null && encryptedRequest.getSessionId() != null) {
+                // Verify session is valid
+                if (!securityManager.isSessionValid(encryptedRequest.getSessionId())) {
+                    logger.warn("Invalid or expired session: {}", encryptedRequest.getSessionId());
+                    return ResponseEntity.badRequest().build();
+                }
+                // Decrypt the token
+                String decryptedToken = null;
+                if (encryptedRequest.getEncryptedData() != null) {
+                    decryptedToken = securityManager.decrypt(
+                            encryptedRequest.getSessionId(),
+                            encryptedRequest.getEncryptedData());
+                }
+                // Get the current user
+                User user = authService.getCurrentUser(decryptedToken);
+                // Encrypt and return the admin status
+                String adminStatus = objectMapper.writeValueAsString(Map.of("isAdmin", user.isAdmin()));
+                String encryptedData = securityManager.encrypt(
+                        encryptedRequest.getSessionId(),
+                        adminStatus);
+                // Return encrypted response
+                return ResponseEntity.ok(new EncryptedResponseDto(encryptedData));
+            } else {
+                // Handle as regular non-encrypted request
+                User user = authService.getCurrentUser(token);
+                return ResponseEntity.ok(Map.of("isAdmin", user.isAdmin()));
+            }
+        } catch (Exception e) {
+            logger.error("Check admin status failed: {}", e.getMessage(), e);
+            return ResponseEntity.status(401).body(Map.of("isAdmin", false, "error", e.getMessage()));
+        }
+    }
+
     // =============== User Management Endpoints ===============
     @GetMapping("/users/me")
     public ResponseEntity<?> getCurrentUser(

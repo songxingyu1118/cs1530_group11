@@ -177,9 +177,10 @@ public class MenuItemService {
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with id " + id));
     }
 
-    public Category saveCategory(String name) {
+    public Category saveCategory(String name, String description) {
         Category category = new Category();
         category.setName(name);
+        category.setDescription(description);
         return categoryRepository.save(category);
     }
 
