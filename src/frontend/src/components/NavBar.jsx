@@ -1,13 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, LogOut, LogIn } from "lucide-react";
+import { ShoppingCart, LogOut, LogIn, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { checkIsAdmin } from '@/utils/secureApi';
 
 function NavBar() {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
-  const username = localStorage.getItem('username');
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [username, setUsername] = useState(localStorage.getItem('username'));
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      // Check for token and username
+      const currentToken = localStorage.getItem('token');
+      const currentUsername = localStorage.getItem('username');
+
+      setToken(currentToken);
+      setUsername(currentUsername);
+
+      // Check if user is admin
+      if (currentToken) {
+        try {
+          const adminStatus = await checkIsAdmin();
+          setIsAdmin(adminStatus);
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, []);
+
   const isLoggedIn = token && username;
 
   const handleLogout = () => {
@@ -31,7 +63,9 @@ function NavBar() {
         <div className="max-w-7xl mx-auto relative px-4">
           <div className="flex justify-between items-center pt-4">
             <div className="flex items-center">
-              <img src={logo} className="h-12 sm:h-16" />
+              <Link to="/">
+                <img src={logo} className="h-12 sm:h-16" alt="Logo" />
+              </Link>
             </div>
 
             <div className="flex items-center gap-2">
@@ -41,12 +75,30 @@ function NavBar() {
                 </span>
               )}
 
-              {/* <Link to="/cart">
-                <Button variant="outline" size="sm" className="flex items-center gap-2 bg-white hover:bg-gray-100">
-                  <Badge variant="secondary" className="mr-1">5</Badge>
-                  <ShoppingCart size={16} />
-                </Button>
-              </Link> */}
+              {/* Admin dashboard link - only visible to admins */}
+              {isLoggedIn && isAdmin && (
+                <Link to="/admin">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 bg-white hover:bg-gray-100"
+                  >
+                    <Settings size={16} />
+                    <span className="hidden sm:inline">Admin</span>
+                  </Button>
+                </Link>
+              )}
+
+              {/* Cart button */}
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 bg-white hover:bg-gray-100"
+                onClick={() => navigate('/cart')}
+              >
+                <ShoppingCart size={16} />
+                <span className="hidden sm:inline">Cart</span>
+              </Button>
 
               {isLoggedIn ? (
                 <Button

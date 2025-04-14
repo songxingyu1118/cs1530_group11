@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/carousel";
 import { AlertCircle, Menu, ChevronRight, ShoppingCart as ShoppingCartIcon, Trash2 } from 'lucide-react';
 import { MenuItemCard } from '@/components/MenuItemCard';
-import { Link } from 'react-router';
 import React, { useEffect, useState } from 'react';
 import '../css/Cart.scss';
 
