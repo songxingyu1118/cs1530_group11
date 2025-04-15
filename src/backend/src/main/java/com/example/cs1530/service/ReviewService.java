@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.cs1530.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,32 +20,51 @@ public class ReviewService {
     @Autowired
     private MenuItemService menuItemService;
 
-    public Review saveReview(String content, int stars, Long menuItemId) {
+    @Autowired
+    private UserRepository userRepository; //for user validation
+
+    /**
+     * Save a new review with optional user ID
+     */
+    public Review saveReview(String content, Integer stars, Long menuItemId, Long userId) {
         Review review = new Review();
         review.setContent(content);
         review.setStars(stars);
-        review.setMenuItem(menuItemService.getMenuItemById(menuItemId));
-        return reviewRepository.save(review);
-    }
+        review.setMenuItem(menuItemService.getMenuItem(menuItemId));
 
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
+        // Set user if userId is provided
+        if (userId != null) {
+            // Optional: Validate that user exists
+            userRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+            review.setUser(userRepository.getReferenceById(userId));
+        }
+
+        return reviewRepository.save(review);
     }
 
     public List<Review> getReviewsByMenuItemId(Long menuItemId) {
         return reviewRepository.findByMenuItemId(menuItemId);
     }
 
-    public double getAverageRatingForMenuItem(Long menuItemId) {
+    public List<Review> getReviewsByUserId(Long userId) {
+        return reviewRepository.findByUserId(userId);
+    }
+
+    public Double getAverageRatingForMenuItem(Long menuItemId) {
         List<Review> reviews = getReviewsByMenuItemId(menuItemId);
         if (reviews.isEmpty()) {
             return 0.0;
         }
 
-        double sum = reviews.stream()
+        Double sum = reviews.stream()
                 .mapToDouble(Review::getStars)
                 .sum();
         return sum / reviews.size();
+    }
+
+    public Integer getReviewCountForMenuItem(Long menuItemId) {
+        return getReviewsByMenuItemId(menuItemId).size();
     }
 
     public Review updateReview(Long id, Review updatedReview) {

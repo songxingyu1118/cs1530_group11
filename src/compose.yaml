@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_AI_OPENAI_API_KEY: ...
+    ports:
+      - 8080:8080
+    volumes:
+      - ./uploads:/app/uploads

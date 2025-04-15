@@ -1,11 +1,13 @@
 package com.example.cs1530.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.example.cs1530.dto.category.CategoryDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
@@ -44,7 +46,7 @@ public class Category {
 
     @ManyToMany(mappedBy = "categories")
     @Schema(description = "Set of menu items that belong to the category")
-    private Set<MenuItem> menuItems = new HashSet<>();
+    private List<MenuItem> menuItems = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -86,11 +88,19 @@ public class Category {
         this.updatedAt = updatedAt;
     }
 
-    public Set<MenuItem> getMenuItems() {
+    public List<MenuItem> getMenuItems() {
         return menuItems;
     }
 
-    public void setMenuItems(Set<MenuItem> menuItems) {
+    public void setMenuItems(List<MenuItem> menuItems) {
         this.menuItems = menuItems;
+    }
+
+    public CategoryDto toDto() {
+        return new CategoryDto(this);
+    }
+
+    public CategoryDto toDto(boolean includeMenuItems) {
+        return new CategoryDto(this, includeMenuItems);
     }
 }

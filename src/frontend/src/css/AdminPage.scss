@@ -1,0 +1,100 @@
+.admin-page {
+    h1 {
+      margin-bottom: 1rem;
+    }
+  
+    .admin-form {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+  
+      h2 {
+        margin-top: 0;
+      }
+  
+      div {
+        display: flex;
+        flex-direction: column;
+  
+        label {
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+        }
+  
+        input[type='text'],
+        input[type='number'],
+        textarea {
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+  
+        input[type='file'] {
+          margin-top: 0.5rem;
+        }
+      }
+  
+      button {
+        width: 6rem;
+        padding: 0.5rem;
+        margin-right: 1rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+        background-color: #444;
+        color: #fff;
+  
+        &:hover {
+          background-color: #666;
+        }
+      }
+    }
+  
+    .items-list {
+      h2 {
+        margin-bottom: 1rem;
+      }
+  
+      ul {
+        list-style: none;
+        padding: 0;
+  
+        li {
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+  
+          h3 {
+            margin: 0 0 0.5rem 0;
+          }
+  
+          img {
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0.5rem 0;
+          }
+  
+          button {
+            margin-right: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #444;
+            color: #fff;
+            padding: 0.5rem 1rem;
+  
+            &:hover {
+              background-color: #666;
+            }
+          }
+        }
+      }
+    }
+  }
+  

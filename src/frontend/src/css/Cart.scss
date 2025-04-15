@@ -1,0 +1,102 @@
+.cart-page {
+    padding: 2rem;
+  }
+  
+  .cart-container {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  /* cart left part */
+  .cart-preview {
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .preview-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 1rem;
+  }
+  
+  /* items at left */
+  .cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+  
+  .cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 1rem;
+  }
+  
+  .cart-item-info {
+    flex: 1;
+  }
+  
+  /* summary part */
+  .cart-summary {
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .summary-items {
+    margin-bottom: 1rem;
+  }
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .total-price {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin: 1rem 0;
+  }
+  
+  /* Tips calculator */
+  .tip-calculator {
+    margin-top: 2rem;
+  }
+  
+  .tip-options {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .custom-tip-input {
+    margin-bottom: 1rem;
+  }
+  
+  .custom-tip-input input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .calculated-tip {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+  

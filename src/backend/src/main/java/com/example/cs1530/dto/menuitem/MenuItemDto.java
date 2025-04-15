@@ -1,35 +1,47 @@
 package com.example.cs1530.dto.menuitem;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
+import com.example.cs1530.dto.category.CategoryDto;
 import com.example.cs1530.entity.MenuItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "The DTO for a menu item")
 public class MenuItemDto {
-    @Schema(description = "Unique integer identifier of the menu item")
+    @Schema(description = "UID for the menu item", example = "1")
     private Long id;
 
-    @Schema(description = "Name of the menu item")
+    @Schema(description = "Name of the menu item", example = "Margherita Pizza", maxLength = 100)
     private String name;
 
-    @Schema(description = "Description of the menu item")
+    @Schema(description = "Detailed description of the menu item (e.g. ingredients)", example = "New York style pizza with fresh mozzarella, tomatoes, and basil", maxLength = 1000)
     private String description;
 
-    @Schema(description = "Price of the menu item")
-    private BigDecimal price;
+    @Schema(description = "Price of the menu item in the site's configured currency", example = "10.99", minimum = "0")
+    private Double price;
 
-    @Schema(description = "Datetime when the menu item was created")
+    @Schema(description = "URL to the menu item's image", example = "/uploads/c0cb6122-8792-401e-b9c5-c55c0c1f51e6.png", maxLength = 255)
+    private String imagePath;
+
+    @Schema(description = "Timestamp when the menu item was first added to the system", example = "2025-03-01T00:00:00")
     private LocalDateTime createdAt;
 
-    @Schema(description = "Datetime when the menu item was last updated")
+    @Schema(description = "Timestamp when the menu item was last modified", example = "2025-03-01T00:00:00")
     private LocalDateTime updatedAt;
 
-    @Schema(description = "Set of category IDs that the menu item belongs to")
-    private Set<Long> categoryIds;
+    @Schema(description = "Average rating of the menu item", example = "4.5", minimum = "0", maximum = "5")
+    private Double rating;
+
+    @Schema(description = "Number of reviews for the menu item", example = "42")
+    private Integer reviewCount;
+
+    @Schema(description = "List of category that this menu item belongs to", example = "[]")
+    private List<CategoryDto> categories;
+
+    @Schema(description = "List of category IDs that this menu item belongs to", example = "[1, 3, 2]")
+    private List<Long> categoryIds;
 
     public Long getId() {
         return id;
@@ -43,11 +55,19 @@ public class MenuItemDto {
         return description;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public Set<Long> getCategoryIds() {
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public List<CategoryDto> getCategories() {
+        return categories;
+    }
+
+    public List<Long> getCategoryIds() {
         return categoryIds;
     }
 
@@ -59,14 +79,34 @@ public class MenuItemDto {
         return updatedAt;
     }
 
+    public Double getRating() {
+        return rating;
+    }
+
+    public Integer getReviewCount() {
+        return reviewCount;
+    }
+
     public MenuItemDto(MenuItem menuItem) {
+        this(menuItem, false);
+    }
+
+    public MenuItemDto(MenuItem menuItem, boolean includeCategories) {
         this.id = menuItem.getId();
         this.name = menuItem.getName();
         this.description = menuItem.getDescription();
+        this.imagePath = menuItem.getImagePath();
         this.price = menuItem.getPrice();
-        this.categoryIds = menuItem.getCategories().stream().map(category -> category.getId())
-                .collect(Collectors.toSet());
         this.createdAt = menuItem.getCreatedAt();
         this.updatedAt = menuItem.getUpdatedAt();
+        this.rating = menuItem.getRating();
+        this.reviewCount = menuItem.getReviewCount();
+
+        if (includeCategories) {
+            this.categories = menuItem.getCategories().stream().map(c -> c.toDto()).toList();
+            this.categoryIds = this.categories.stream().map(c -> c.getId()).toList();
+        } else {
+            this.categoryIds = menuItem.getCategories().stream().map(c -> c.getId()).toList();
+        }
     }
 }
