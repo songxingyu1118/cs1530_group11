@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StarRating } from "@/components/StarRating";
 import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Sparkles } from 'lucide-react';
 import { ReviewList } from '@/components/ReviewList';
 
 
@@ -13,8 +13,10 @@ import { ReviewList } from '@/components/ReviewList';
 const FullMenuItem = () => {
   const { id } = useParams();
   const [item, setItem] = React.useState(null);
+  const [summary, setSummary] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [itemLoading, setItemLoading] = React.useState(true);
+  const [summaryLoading, setSummaryLoading] = React.useState(true);
 
   const fetchMenuItem = async () => {
     try {
@@ -30,9 +32,25 @@ const FullMenuItem = () => {
       setItemLoading(false);
     }
   };
+
+  const generateSummary = async () => {
+    try {
+      const response = await fetch(`/api/menu/summary/${id}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok generating summary");
+      }
+      const data = await response.text();
+      setSummary(data);
+      setSummaryLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setSummaryLoading(false);
+    }
+  };
   
   React.useEffect(() => {
     fetchMenuItem();
+    generateSummary();
   }, [id]);
 
   if (itemLoading) {
@@ -77,25 +95,30 @@ const FullMenuItem = () => {
                   <h3 className="text-xl font-semibold mb-2">Description</h3>
                   <p className="text-muted-foreground">{item.description}</p>
                 </div>
-                {item.categories && item.categories.length > 0 && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Categories</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {item.categories.map((category) => (
-                        <span className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm">
-                          {category.name}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {item.rating && (
+                {item.rating ? (
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Rating</h3>
                     <StarRating rating={item.rating} reviewCount={item.reviewCount} />
                   </div>
+                ): (
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Rating</h3>
+                    <p className="text-muted-foreground">No ratings yet</p>
+                  </div>
+                )}
+                {!summaryLoading && summary && summary.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-xl font-semibold">User Review Summary</h3> <Sparkles />
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">{summary}</p>
+                    </div>
+                  </div>
                 )}
               </div>
+              
+              
             </CardContent>
           </Card>
         </div>
