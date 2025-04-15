@@ -566,7 +566,7 @@ def format_sql_timestamp(dt):
     """Format datetime object to SQL timestamp string"""
     if dt is None:
         return "NULL"
-    return dt.timestamp()
+    return dt.timestamp() * 1000
 
 
 def format_sql_string(s):
