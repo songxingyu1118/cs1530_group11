@@ -7,12 +7,13 @@ import { StarRating } from "@/components/StarRating";
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { ReviewList } from '@/components/ReviewList';
-
+import { BrainIcon } from 'lucide-react';
 
 
 const FullMenuItem = () => {
   const { id } = useParams();
   const [item, setItem] = React.useState(null);
+  const [summary, setSummary] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [itemLoading, setItemLoading] = React.useState(true);
 
@@ -30,9 +31,23 @@ const FullMenuItem = () => {
       setItemLoading(false);
     }
   };
-  
+
+  const fetchAiSummary = async () => {
+    try {
+      const response = await fetch(`/api/menu/summary/${id}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok fetching summary");
+      }
+      const data = await response.text();
+      setSummary(data);
+    } catch (error) {
+      console.error("Error fetching AI summary:", error);
+    }
+  };
+
   React.useEffect(() => {
     fetchMenuItem();
+    fetchAiSummary();
   }, [id]);
 
   if (itemLoading) {
@@ -64,19 +79,16 @@ const FullMenuItem = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
+                <p className="text-muted-foreground">{item.description}</p>
                 {item.imagePath && (
                   <div className="relative h-64 w-full overflow-hidden rounded-lg">
-                    <img 
-                      src={item.imagePath} 
-                      alt={item.name} 
+                    <img
+                      src={item.imagePath}
+                      alt={item.name}
                       className="absolute inset-0 h-full w-full object-cover"
                     />
                   </div>
                 )}
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Description</h3>
-                  <p className="text-muted-foreground">{item.description}</p>
-                </div>
                 {item.categories && item.categories.length > 0 && (
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Categories</h3>
@@ -89,12 +101,22 @@ const FullMenuItem = () => {
                     </div>
                   </div>
                 )}
-                {item.rating && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Rating</h3>
+
+                <div className="mt-6 p-4 border border-blue-200 bg-blue-50 rounded-lg">
+                  <h3 className="text-xl font-semibold mb-2 flex items-center">
+                    <BrainIcon className="mr-2 text-blue-500" />
+                    User Sentiment
+                  </h3>
+                  {item.rating && (
                     <StarRating rating={item.rating} reviewCount={item.reviewCount} />
-                  </div>
-                )}
+                  )}
+
+                  {summary ? (
+                    <p className="italic text-gray-700">{summary}</p>
+                  ) : (
+                    <p className="italic text-gray-500">No user reviews available.</p>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -106,4 +128,4 @@ const FullMenuItem = () => {
   );
 };
 
-export default FullMenuItem;
+export default FullMenuItem;;
