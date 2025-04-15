@@ -36,7 +36,7 @@ const formSchema = z.object({
     .max(500, "Review cannot exceed 500 characters"),
 });
 
-const NewReviewButton = ({ menuItemId }) => {
+const NewReviewButton = ({ menuItemId, submitFunction }) => {
   const [open, setOpen] = useState(false);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,6 +81,11 @@ const NewReviewButton = ({ menuItemId }) => {
       // Close dialog and reset form
       setOpen(false);
       form.reset();
+
+      // Call submit function passed in
+      if (submitFunction) {
+        submitFunction();
+      }
     } catch (error) {
       console.error("Error submitting review:", error);
       console.log("Star number:", values.stars);

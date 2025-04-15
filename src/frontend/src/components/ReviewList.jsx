@@ -86,7 +86,7 @@ const ReviewList = ({ menuItemId }) => {
       <Card className="h-full">
         <CardHeader>
           <CardTitle >
-            <NewReviewButton menuItemId={menuItemId} />  
+            <NewReviewButton menuItemId={menuItemId} submitFunction={() => fetchReviews()}/>  
           </CardTitle>
         </CardHeader>
         <CardContent>

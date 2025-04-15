@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StarRating } from "@/components/StarRating";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Sparkles } from 'lucide-react';
 import { ReviewList } from '@/components/ReviewList';
@@ -104,6 +105,16 @@ const FullMenuItem = () => {
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Rating</h3>
                     <p className="text-muted-foreground">No ratings yet</p>
+                  </div>
+                )}
+                {summaryLoading && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-xl font-semibold">User Review Summary</h3> <Sparkles />
+                    </div>
+                    <Skeleton className="w-full h-4" />
+                    <Skeleton className="w-full h-4" />
+                    <Skeleton className="w-3/4 h-4" />
                   </div>
                 )}
                 {!summaryLoading && summary && summary.length > 0 && (
